@@ -206,9 +206,7 @@ if __name__ == "__main__":
                     readerror[1] = False
         if any(readerror):
             raise ValueError(
-                "Error - NEB metadata file {} has been corrupted!".format(
-                    optfile
-                )
+                "Error - NEB metadata file {} has been corrupted!".format(optfile)
             )
 
     # if initial run, save NEB metadata to optfile
@@ -273,9 +271,7 @@ if __name__ == "__main__":
         flines["stdout"].append("===========")
         flines["stdout"].append("Run summary")
         flines["stdout"].append("===========\n")
-        flines["stdout"].append(
-            "{:<40}".format("System name") + " : " + sys_name
-        )
+        flines["stdout"].append("{:<40}".format("System name") + " : " + sys_name)
         flines["stdout"].append(
             "{:<40}".format("Number of images per band") + " : " + str(Nim)
         )
@@ -283,13 +279,9 @@ if __name__ == "__main__":
             "{:<40}".format("NEB hamiltonian minimiser") + " : " + opt_method
         )
         flines["stdout"].append(
-            "{:<40}".format("Initial band interpolation method")
-            + " : "
-            + interp_method
+            "{:<40}".format("Initial band interpolation method") + " : " + interp_method
         )
-        flines["stdout"].append(
-            "{:<40}".format("Fixed cell vectors") + " : true"
-        )
+        flines["stdout"].append("{:<40}".format("Fixed cell vectors") + " : true")
         flines["stdout"].append(
             "{:<40}".format("Number of cartesian atomic constraints")
             + " : "
@@ -315,9 +307,9 @@ if __name__ == "__main__":
                 for _line in flines2:
                     NEB_energies.append(float(_line.split()[3]))
 
-        assert len(energies) == len(
-            NEB_energies
-        ), "{} file possibly corrupted".format(".log")
+        assert len(energies) == len(NEB_energies), "{} file possibly corrupted".format(
+            ".log"
+        )
 
         if len(energies) != 0:
             flines["stdout"].append("===========")
@@ -337,9 +329,7 @@ if __name__ == "__main__":
                         str(i + 1), str(j + 1), _file, energies[i][_file]
                     )
                 )
-            flines["stdout"].append(
-                "\nband energy : {}".format(NEB_energies[i])
-            )
+            flines["stdout"].append("\nband energy : {}".format(NEB_energies[i]))
             flines["stdout"].append("")
 
         for _l in flines["stdout"]:
@@ -348,25 +338,17 @@ if __name__ == "__main__":
         # print information about status of latest CASTEP dft runs
         if len(progress) != 0:
             flines["stdout"].append(
-                "Progress of DFT for most recent band (band "
-                + str(Nbands)
-                + ")\n"
+                "Progress of DFT for most recent band (band " + str(Nbands) + ")\n"
             )
             flines["file"].append(flines["stdout"][-1] + "\n")
 
             for _file in sorted(progress):
                 if progress[_file]:
-                    flines["stdout"].append(
-                        "\033[1;32m{}\033[1;m".format(_file)
-                    )
+                    flines["stdout"].append("\033[1;32m{}\033[1;m".format(_file))
                     flines["file"].append("{:<40} (complete)\n".format(_file))
                 else:
-                    flines["stdout"].append(
-                        "\033[1;31m{}\033[1;m".format(_file)
-                    )
-                    flines["file"].append(
-                        "{:<40} (incomplete)\n".format(_file)
-                    )
+                    flines["stdout"].append("\033[1;31m{}\033[1;m".format(_file))
+                    flines["file"].append("{:<40} (incomplete)\n".format(_file))
 
             if not all([progress[_f] for _f in progress]):
                 flines["stdout"].append(
@@ -384,28 +366,13 @@ if __name__ == "__main__":
                 flines["file"].append(flines["stdout"][-1] + "\n")
 
                 for i in range(1, Nim + 1):
-                    _file = (
-                        sys_name
-                        + "_"
-                        + str(Nbands + 1)
-                        + "-"
-                        + str(i)
-                        + ".castep"
-                    )
+                    _file = sys_name + "_" + str(Nbands + 1) + "-" + str(i) + ".castep"
                     if i == 1 or i == Nim:
-                        flines["stdout"].append(
-                            "\033[1;32m{}\033[1;m".format(_file)
-                        )
-                        flines["file"].append(
-                            "{:<40} (complete)\n".format(_file)
-                        )
+                        flines["stdout"].append("\033[1;32m{}\033[1;m".format(_file))
+                        flines["file"].append("{:<40} (complete)\n".format(_file))
                     else:
-                        flines["stdout"].append(
-                            "\033[1;31m{}\033[1;m".format(_file)
-                        )
-                        flines["file"].append(
-                            "{:<40} (incomplete)\n".format(_file)
-                        )
+                        flines["stdout"].append("\033[1;31m{}\033[1;m".format(_file))
+                        flines["file"].append("{:<40} (incomplete)\n".format(_file))
 
             # write file
             with open("summary.pyneb", "w") as f:
@@ -438,18 +405,15 @@ if __name__ == "__main__":
         msg += "in the working directory when creating the first band of images. See documentation:\n"
         msg += ">>> pyneb.py -h"
 
-        assert len(initial_cell) == 2, (
-            "Have found {} ".format(len(initial_cell)) + msg
-        )
+        assert len(initial_cell) == 2, "Have found {} ".format(len(initial_cell)) + msg
 
-        msg = "Cannot find .param files in the working directory for the seed .cell files"
+        msg = (
+            "Cannot find .param files in the working directory for the seed .cell files"
+        )
 
         # check for associated .param files
         assert all(
-            [
-                initial_cell[i].split(".")[0] + ".param" in files
-                for i in range(2)
-            ]
+            [initial_cell[i].split(".")[0] + ".param" in files for i in range(2)]
         ), msg
 
         for _f in files:
@@ -544,9 +508,7 @@ if __name__ == "__main__":
             # loop over all previous bands before the most recent
 
             for j in range(Nim):
-                _file = (
-                    sys_name + "_" + str(i + 1) + "-" + str(j + 1) + ".castep"
-                )
+                _file = sys_name + "_" + str(i + 1) + "-" + str(j + 1) + ".castep"
 
                 assert (
                     _file in files
@@ -599,9 +561,7 @@ if __name__ == "__main__":
             images = []
 
             for i in range(Nim):
-                _file = (
-                    sys_name + "_" + str(Nbands) + "-" + str(i + 1) + ".castep"
-                )
+                _file = sys_name + "_" + str(Nbands) + "-" + str(i + 1) + ".castep"
 
                 parser = GeneralInputParser()
 
@@ -674,14 +634,7 @@ if __name__ == "__main__":
             # output new band of images
             for i, img in enumerate(neb.images):
                 # file name
-                _file = (
-                    sys_name
-                    + "_"
-                    + str(Nbands + 1)
-                    + "-"
-                    + str(i + 1)
-                    + ".cell"
-                )
+                _file = sys_name + "_" + str(Nbands + 1) + "-" + str(i + 1) + ".cell"
 
                 # output to .cell
                 asetocell(img, keywords, _file)
@@ -693,12 +646,8 @@ if __name__ == "__main__":
                 )
 
             # copy pckl file and traj file
-            copyfile(
-                restart_name, nebdir + sys_name + "_" + str(Nbands) + ".pckl"
-            )
-            copyfile(
-                traject_name, nebdir + sys_name + "_" + str(Nbands) + ".traj"
-            )
+            copyfile(restart_name, nebdir + sys_name + "_" + str(Nbands) + ".pckl")
+            copyfile(traject_name, nebdir + sys_name + "_" + str(Nbands) + ".traj")
 
             # copy .castep file for end points from previous band
             copyfile(
@@ -713,9 +662,7 @@ if __name__ == "__main__":
             # DFT calculations of current band are not complete
 
             # dummy .cell file from current band to fetch number of constraints
-            images = [
-                ase.io.read(sys_name + "_" + str(Nbands) + "-1.cell")
-            ] * 3
+            images = [ase.io.read(sys_name + "_" + str(Nbands) + "-1.cell")] * 3
 
             # dummy neb object for pyneb printing to stdout
             neb = NEB(images)

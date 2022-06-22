@@ -2,28 +2,136 @@
 routines for dealing with parsing an ase Atoms object to a .cell file
 """
 
+ALLOWED_CELL_KEYWORDS = [
+    "lattice_cart",
+    "lattice_abc",
+    "positions_frac",
+    "positions_abs",
+    "symmetry_generate",
+    "symmetry_ops",
+    "symmetry_tol",
+    "ionic_constraints",
+    "fix_com",
+    "cell_constraints",
+    "external_pressure",
+    "fix_all_ions",
+    "fix_all_cell",
+    "species_mass",
+    "species_pot",
+    "ionic_velocities",
+    "species_lcao_states",
+    "kpoints_list",
+    "kpoints_mp_grid",
+    "kpoints_mp_spacing",
+    "kpoints_mp_offset",
+    "kpoint_list",
+    "kpoint_mp_grid",
+    "kpoint_mp_spacing",
+    "kpoint_mp_offset",
+    "bs_kpoint_path",
+    "bs_kpoint_path_spacing",
+    "bs_kpoint_list",
+    "bs_kpoint_mp_grid",
+    "bs_kpoint_mp_spacing",
+    "bs_kpoint_mp_offset",
+    "bs_kpoints_path",
+    "bs_kpoints_path_spacing",
+    "bs_kpoints_list",
+    "bs_kpoints_mp_grid",
+    "bs_kpoints_mp_spacing",
+    "bs_kpoints_mp_offset",
+    "phonon_supercell_matrix",
+    "phonon_kpoint_path",
+    "phonon_kpoint_path_spacing",
+    "phonon_kpoint_list",
+    "phonon_kpoint_mp_grid",
+    "phonon_kpoint_mp_offset",
+    "phonon_kpoint_mp_spacing",
+    "phonon_gamma_directions",
+    "phonon_kpoints_path",
+    "phonon_kpoints_path_spacing",
+    "phonon_kpoints_list",
+    "phonon_fine_kpoint_list",
+    "phonon_fine_kpoint_path",
+    "phonon_fine_kpoint_path_spacing",
+    "phonon_fine_kpoint_mp_grid",
+    "phonon_fine_kpoint_mp_spacing",
+    "phonon_fine_kpoint_mp_offset",
+    "optics_kpoints_list",
+    "optics_kpoints_mp_grid",
+    "optics_kpoints_mp_spacing",
+    "optics_kpoints_mp_offset",
+    "optics_kpoint_list",
+    "optics_kpoint_mp_grid",
+    "optics_kpoint_mp_spacing",
+    "optics_kpoint_mp_offset",
+    "magres_kpoint_list",
+    "magres_kpoint_path",
+    "magres_kpoint_path_spacing",
+    "magres_kpoint_mp_grid",
+    "magres_kpoint_mp_spacing",
+    "magres_kpoint_mp_offset",
+    "positions_frac_product",
+    "positions_abs_product",
+    "positions_frac_intermediate",
+    "positions_abs_intermediate",
+    "fix_vol",
+    "species_gamma",
+    "species_q",
+    "supercell_kpoints_list",
+    "supercell_kpoints_mp_grid",
+    "supercell_kpoints_mp_spacing",
+    "supercell_kpoints_mp_offset",
+    "supercell_kpoint_list",
+    "supercell_kpoint_mp_grid",
+    "supercell_kpoint_mp_spacing",
+    "supercell_kpoint_mp_offset",
+    "supercell_matrix",
+    "nonlinear_constraints",
+    "external_efield",
+    "positions_noise",
+    "cell_noise",
+    "hubbard_u",
+    "hubbard_alpha",
+    "atomic_init",
+    "quantisation_axis",
+    "quantization_axis",
+    "jcoupling_site",
+    "chemical_potential",
+    "elnes_kpoint_list",
+    "elnes_kpoint_mp_grid",
+    "elnes_kpoint_mp_spacing",
+    "elnes_kpoint_mp_offset",
+    "snap_to_symmetry",
+    "spectral_kpoint_path",
+    "spectral_kpoint_path_spacing",
+    "spectral_kpoint_list",
+    "spectral_kpoint_mp_grid",
+    "spectral_kpoint_mp_spacing",
+    "spectral_kpoint_mp_offset",
+    "spectral_kpoints_path",
+    "spectral_kpoints_path_spacing",
+    "spectral_kpoints_list",
+    "spectral_kpoints_mp_grid",
+    "spectral_kpoints_mp_spacing",
+    "spectral_kpoints_mp_offset",
+    "sedc_custom_params",
+]
+
+PROTECTED_CELL_KEYWORDS = [
+    "lattice_cart",
+    "lattice_abc",
+    "positions_frac",
+    "positions_abs",
+]
+
 
 def fetchkeywords(_cellfile):
     """
     strip lattice vector and atom position coordinates
     """
-    # for importing pyneb library destination
-    import pyneb
 
     # keys not to copy
-    protected_keys = [
-        "lattice_cart",
-        "lattice_abc",
-        "positions_frac",
-        "positions_abs",
-    ]
-
-    with open(pyneb.pyneb_lib + "pyneb_cellkeywords.txt", "r") as f:
-        keywords = f.readlines()
-
-        # strip newline characters
-        for i, _key in enumerate(keywords):
-            keywords[i] = _key.lower().strip("\n")
 
     with open(_cellfile, "r") as f:
         flines = f.readlines()
@@ -31,8 +139,8 @@ def fetchkeywords(_cellfile):
     # list of lines of keyword extracts to copy
     keylines = []
 
-    for _key in keywords:
-        if _key in protected_keys:
+    for _key in ALLOWED_CELL_KEYWORDS:
+        if _key in PROTECTED_CELL_KEYWORDS:
             continue
 
         instances = []
@@ -64,14 +172,6 @@ def comparekeywords(lines):
     compre 2 lists of lines to be identical when space delimited
     """
     from copy import deepcopy
-    import pyneb
-
-    with open(pyneb.pyneb_lib + "pyneb_cellkeywords.txt", "r") as f:
-        keywords = f.readlines()
-
-        # strip newline characters
-        for i, _key in enumerate(keywords):
-            keywords[i] = _key.lower().strip("\n")
 
     # list of dictionary of keywords
     dictlist = []
@@ -83,7 +183,7 @@ def comparekeywords(lines):
         # list of lines of keyword extracts to copy
         keylines = {}
 
-        for _key in keywords:
+        for _key in ALLOWED_CELL_KEYWORDS:
 
             instances = []
             tmplines = []
