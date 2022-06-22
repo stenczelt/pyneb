@@ -20,7 +20,7 @@ Method
 2. Run pyneb specifying <N>, the number of desired images, along with all other
    optional arguments listed below.
 
->>> pyneb.py 7 -n phase_change_1 -o MDmin -i linear
+>>> pyneb 7 -n phase_change_1 -o MDmin -i linear
 
 3. Run CASTEP on all <calc-name>_1-i.(cell/param) files generated, i=[1,<N>]
 
@@ -468,7 +468,8 @@ def main():
             _parmfile = sys_name + "_1-" + str(i) + ".param"
 
             # parse ase Atoms object to a castep cell file
-            asetocell(neb.images[i - 1], keywords[0], _cellfile)
+            # we are wirting the spins as well, in case they have been set
+            ase.io.write(_cellfile, neb.images[i - 1], magnetic_moments="initial")
 
             # copy initial param file
             copyfile(initial_param[0], _parmfile)
@@ -655,7 +656,7 @@ def main():
             neb = NEB(images)
 
     # print info to stdout
-    printheader(
+    print_header(
         sys_name,
         opt_method,
         interp_method,
