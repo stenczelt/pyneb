@@ -11,7 +11,12 @@ def fetchkeywords(_cellfile):
     import pyneb
 
     # keys not to copy
-    protected_keys = ["lattice_cart", "lattice_abc", "positions_frac", "positions_abs"]
+    protected_keys = [
+        "lattice_cart",
+        "lattice_abc",
+        "positions_frac",
+        "positions_abs",
+    ]
 
     with open(pyneb.pyneb_lib + "pyneb_cellkeywords.txt", "r") as f:
         keywords = f.readlines()
@@ -133,155 +138,6 @@ def comparekeywords(lines):
                     )
 
 
-def celltoase(_file):
-    """
-    return an ase Atoms object for the .cell file, _file
-    """
-    from ase.atom import Atom
-    from ase.atoms import Atoms
-    from ase.constraints import FixCartesian
-    from numpy import zeros
-
-    def fractocart(gamma, cell):
-        """
-        convert fractional to cartesian coordinates
-
-        assumes cell[i,j] is the jth cartesian component of the ith cell vector
-        """
-        r = [sum([gamma[j] * cell[j, i] for j in range(3)]) for i in range(3)]
-
-        return r
-
-    ############
-
-    def calc_index(elements, line):
-        """
-        return the atom index i=[0,N-1] of a constraint,line
-        with atom number in given species line.split()[1], line.split()[2]
-
-        elements is the list of atom species with which to order
-        """
-        # species element
-        species = line.split()[1].lower()
-
-        # atom number with species
-        species_num = int(line.split()[2]) - 1
-
-        # list of atom indices for each instance of species atom type
-        species_idxs = []
-
-        for i, _atm_type in enumerate(elements):
-            if _atm_type.lower() == species:
-                species_idxs.append(i)
-
-        return species_idxs[species_num]
-
-    # check format
-    assert (
-        _file.split(".")[-1].lower() == "cell"
-    ), "internal error: {} is not a .cell file!".format(_file)
-
-    with open(_file, "r") as f:
-        flines = f.readlines()
-
-        # flines indices for lattice cart, atoms and cartesian constraints
-        lat_lines = []
-        atm_lines = []
-        car_lines = []
-
-        for i, l in enumerate(flines):
-            if "lattice_cart" in l.lower():
-                lat_lines.append(i)
-            elif "positions_frac" in l.lower():
-                atm_lines.append(i)
-            elif "ionic_constraints" in l.lower():
-                car_lines.append(i)
-
-        assert (
-            len(lat_lines) == 2
-            and len(atm_lines) == 2
-            and (len(car_lines) == 2 or len(car_lines) == 0)
-        ), "parsing error for {}, please check file.".format(_file)
-
-        # get cell vectors cell[i,j] is the jth cartesian component of the ith cell vector
-        cell = zeros((3, 3), dtype=float)
-
-        for i, line in enumerate(flines[lat_lines[0] + 1 : lat_lines[1]]):
-            for j, coordinate in enumerate(line.split()):
-                cell[i, j] = float(coordinate)
-
-        # fetch number of atoms in .cell file
-        Natm = 0
-        for line in flines[atm_lines[0] + 1 : atm_lines[1]]:
-            if len(line.split()) > 0:
-                Natm += 1
-
-        elements = []
-
-        # get atom species list,elements
-        for line in flines[atm_lines[0] + 1 : atm_lines[1]]:
-            if len(line.split()) != 0:
-                elements.append(line.split()[0])
-
-        # no constraint if unspecified, signified by zeros
-        constraints = [zeros(3, dtype=int) for i in range(Natm)]
-
-        if len(car_lines) != 0:
-            for line in flines[car_lines[0] + 1 : car_lines[1]]:
-                if len(line.split()) > 0:
-                    assert (
-                        len(line.split()) == 6
-                    ), "error parsing constraint line: {}".format(line)
-
-                    # list index of constraint
-                    index = calc_index(elements, line)
-                    # index = int(line.split()[2])-1 deprecated
-
-                    for i in range(3):
-                        val = float(line.split()[3 + i])
-                        if val != 0:
-                            assert (
-                                val == 1
-                            ), "unsupported constraint value. Only 1 or 0 supported."
-
-                            constraints[index][i] = 1
-
-        # list for ase atom objects
-        atoms_list = []
-
-        # list of ase constraints objects
-        constraint_list = []
-
-        # allow for spurious newlines between atom entries
-        cntr = 0
-
-        for line in flines[atm_lines[0] + 1 : atm_lines[1]]:
-            if len(line.split()) > 0:
-                # cartesian components of atom
-                _xyztuple = fractocart(
-                    [float(_frac) for _frac in line.split()[1:]], cell
-                )
-
-                # atomic species of atom
-                species = line.split()[0]
-
-                # cartesian constraints on atom, if any
-                if any(constraints[cntr]):
-                    # cartesian constraints, if mask[i]==1, ith cartesian component should be fixed
-                    constraint_list.append(
-                        FixCartesian(cntr, mask=tuple(constraints[cntr]))
-                    )
-
-                atoms_list.append(Atom(symbol=species, position=_xyztuple))
-
-                # book keeping
-                cntr += 1
-
-        return Atoms(
-            atoms_list, cell=cell, pbc=(True, True, True), constraint=constraint_list
-        )
-
-
 def asetocell(atoms_object, keywords, cellfile):
     """
     extralines is a list of lines to be appended to the lattice
@@ -380,6 +236,9 @@ def checkparamfiles(param1, param2):
         for _l in flines[i]:
             if len(_l) != 0:
                 # create dictionary of .param {keywords:value} for both files, store these dicts in a list
+                if _l.lstrip().startswith("#"):
+                    # this is a comment, should also check ! and
+                    continue
                 dicts[i].update(
                     {
                         _l.split(":")[0]
