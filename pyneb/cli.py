@@ -57,36 +57,22 @@ Optional:
 from copy import deepcopy
 from os import listdir, mkdir, path as ospath
 from shutil import copyfile
-from sys import exit, path, version_info
+from sys import exit, version_info
 
 import ase.io
 from ase.neb import NEB
 from ase.optimize import BFGS, FIRE, LBFGS, MDMin
 from docopt import docopt
 
-# -----------------------------------------------------#
-# append location of pyneb library files, to sys.path #
-# -----------------------------------------------------#
-pyneb_lib = "/home/atf29/Documents/bitbucket_local/pyneb"
-
-path.append(pyneb_lib)
-
-# ---------------#
-# pyneb modules #
-# ---------------#
-
-from pyneb_parsecell import fetchkeywords as fetchkeywords
-from pyneb_parsecell import asetocell as asetocell
-from pyneb_parsecell import comparekeywords as comparekeywords
-from pyneb_parsecell import checkparamfiles as checkparamfiles
-from pyneb_parsecell import adoptcellorder as adoptcellorder
-from pyneb_parsecell import checkimages as checkimages
-from pyneb_parser_general import GeneralInputParser as GeneralInputParser
-
-
-# format library destination to end with '/'
-if pyneb_lib.split("/")[-1] != "":
-    pyneb_lib += "/"
+from pyneb.parsecell import (
+    adoptcellorder,
+    asetocell,
+    checkimages,
+    checkparamfiles,
+    comparekeywords,
+    fetchkeywords,
+)
+from pyneb.parser_general import GeneralInputParser
 
 if __name__ == "__main__":
     # check user is running on python3
