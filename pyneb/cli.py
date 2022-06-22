@@ -226,148 +226,6 @@ def main():
     assert Nim >= 3, "{} images is an unsuitable number for NEB".format(Nim)
 
     # subsidiary routines
-    def printheader(
-        sys_name,
-        opt_method,
-        interp_method,
-        Nim,
-        Nbands,
-        progress,
-        energies,
-        Nconst,
-        nebdir,
-    ):
-        # number of generated bands
-        if len(energies) == Nbands:
-            genbands = Nbands + 1
-        else:
-            genbands = Nbands
-
-        # list of lines for output to stdout and file
-        flines = {"stdout": [], "file": []}
-
-        flines["stdout"].append(
-            "-------------------------------------------------------------------------"
-        )
-        flines["stdout"].append(
-            "================================= pyneb ================================="
-        )
-        flines["stdout"].append(
-            "-------------------------------------------------------------------------\n"
-        )
-        flines["stdout"].append("===========")
-        flines["stdout"].append("Run summary")
-        flines["stdout"].append("===========\n")
-        flines["stdout"].append("{:<40}".format("System name") + " : " + sys_name)
-        flines["stdout"].append(
-            "{:<40}".format("Number of images per band") + " : " + str(Nim)
-        )
-        flines["stdout"].append(
-            "{:<40}".format("NEB hamiltonian minimiser") + " : " + opt_method
-        )
-        flines["stdout"].append(
-            "{:<40}".format("Initial band interpolation method") + " : " + interp_method
-        )
-        flines["stdout"].append("{:<40}".format("Fixed cell vectors") + " : true")
-        flines["stdout"].append(
-            "{:<40}".format("Number of cartesian atomic constraints")
-            + " : "
-            + str(Nconst)
-        )
-        flines["stdout"].append(
-            "{:<40}".format("Bands generated so far") + " : " + str(genbands)
-        )
-        flines["stdout"].append(
-            "{:<40}".format("Bands on which DFT has been completed")
-            + " : "
-            + str(len(energies))
-            + "\n"
-        )
-
-        # fetch NEB energies
-        NEB_energies = []
-
-        if Nbands != 0:
-            with open(nebdir + sys_name + ".log", "r") as f:
-                flines2 = f.readlines()
-
-                for _line in flines2:
-                    NEB_energies.append(float(_line.split()[3]))
-
-        assert len(energies) == len(NEB_energies), "{} file possibly corrupted".format(
-            ".log"
-        )
-
-        if len(energies) != 0:
-            flines["stdout"].append("===========")
-            flines["stdout"].append("NEB summary")
-            flines["stdout"].append("===========\n")
-
-        for i in range(len(energies)):
-            flines["stdout"].append("------")
-            flines["stdout"].append("Band " + str(i + 1))
-            flines["stdout"].append("------\n")
-            flines["stdout"].append(
-                "band number    image number    file name                      energy / (eV)"
-            )
-            for j, _file in enumerate(sorted(energies[i])):
-                flines["stdout"].append(
-                    "{:<3}            {:<4}            {:<30} {}".format(
-                        str(i + 1), str(j + 1), _file, energies[i][_file]
-                    )
-                )
-            flines["stdout"].append("\nband energy : {}".format(NEB_energies[i]))
-            flines["stdout"].append("")
-
-        for _l in flines["stdout"]:
-            flines["file"].append(_l + "\n")
-
-        # print information about status of latest CASTEP dft runs
-        if len(progress) != 0:
-            flines["stdout"].append(
-                "Progress of DFT for most recent band (band " + str(Nbands) + ")\n"
-            )
-            flines["file"].append(flines["stdout"][-1] + "\n")
-
-            for _file in sorted(progress):
-                if progress[_file]:
-                    flines["stdout"].append("\033[1;32m{}\033[1;m".format(_file))
-                    flines["file"].append("{:<40} (complete)\n".format(_file))
-                else:
-                    flines["stdout"].append("\033[1;31m{}\033[1;m".format(_file))
-                    flines["file"].append("{:<40} (incomplete)\n".format(_file))
-
-            if not all([progress[_f] for _f in progress]):
-                flines["stdout"].append(
-                    "\nDFT calculations have not finished on band {}, cannot iterate to next band yet".format(
-                        Nbands
-                    )
-                )
-                flines["file"].append(flines["stdout"][-1] + "\n")
-            else:
-                flines["stdout"].append(
-                    "\nDFT calculations for band {} are complete, have generated {} new images for band {}\n".format(
-                        Nbands, Nim - 2, Nbands + 1
-                    )
-                )
-                flines["file"].append(flines["stdout"][-1] + "\n")
-
-                for i in range(1, Nim + 1):
-                    _file = sys_name + "_" + str(Nbands + 1) + "-" + str(i) + ".castep"
-                    if i == 1 or i == Nim:
-                        flines["stdout"].append("\033[1;32m{}\033[1;m".format(_file))
-                        flines["file"].append("{:<40} (complete)\n".format(_file))
-                    else:
-                        flines["stdout"].append("\033[1;31m{}\033[1;m".format(_file))
-                        flines["file"].append("{:<40} (incomplete)\n".format(_file))
-
-            # write file
-            with open("summary.pyneb", "w") as f:
-                f.writelines(flines["file"])
-
-            # print to stdout
-            for _l in flines["stdout"]:
-                print(_l)
 
     if args["<N>"]:
         # -----------------------#
@@ -612,6 +470,8 @@ def main():
                     trajectory=traject_name,
                     logfile=logfile_name,
                 )
+            else:
+                raise ValueError(f"Opt method not understood: {opt_method}")
 
             # perform 1 step, generating next iteration
             qn.run(fmax=0.05, steps=1, castep_neb=True)
@@ -667,6 +527,148 @@ def main():
         len(neb.images[0].constraints),
         nebdir,
     )
+
+
+def print_header(
+    sys_name,
+    opt_method,
+    interp_method,
+    Nim,
+    Nbands,
+    progress,
+    energies,
+    Nconst,
+    nebdir,
+):
+    # number of generated bands
+    if len(energies) == Nbands:
+        genbands = Nbands + 1
+    else:
+        genbands = Nbands
+
+    # list of lines for output to stdout and file
+    flines = {"stdout": [], "file": []}
+
+    flines["stdout"].append(
+        "-------------------------------------------------------------------------"
+    )
+    flines["stdout"].append(
+        "================================= pyneb ================================="
+    )
+    flines["stdout"].append(
+        "-------------------------------------------------------------------------\n"
+    )
+    flines["stdout"].append("===========")
+    flines["stdout"].append("Run summary")
+    flines["stdout"].append("===========\n")
+    flines["stdout"].append("{:<40}".format("System name") + " : " + sys_name)
+    flines["stdout"].append(
+        "{:<40}".format("Number of images per band") + " : " + str(Nim)
+    )
+    flines["stdout"].append(
+        "{:<40}".format("NEB hamiltonian minimiser") + " : " + opt_method
+    )
+    flines["stdout"].append(
+        "{:<40}".format("Initial band interpolation method") + " : " + interp_method
+    )
+    flines["stdout"].append("{:<40}".format("Fixed cell vectors") + " : true")
+    flines["stdout"].append(
+        "{:<40}".format("Number of cartesian atomic constraints") + " : " + str(Nconst)
+    )
+    flines["stdout"].append(
+        "{:<40}".format("Bands generated so far") + " : " + str(genbands)
+    )
+    flines["stdout"].append(
+        "{:<40}".format("Bands on which DFT has been completed")
+        + " : "
+        + str(len(energies))
+        + "\n"
+    )
+
+    # fetch NEB energies
+    NEB_energies = []
+
+    if Nbands != 0:
+        with open(nebdir + sys_name + ".log", "r") as f:
+            flines2 = f.readlines()
+
+            for _line in flines2:
+                NEB_energies.append(float(_line.split()[3]))
+
+    assert len(energies) == len(NEB_energies), "{} file possibly corrupted".format(
+        ".log"
+    )
+
+    if len(energies) != 0:
+        flines["stdout"].append("===========")
+        flines["stdout"].append("NEB summary")
+        flines["stdout"].append("===========\n")
+
+    for i in range(len(energies)):
+        flines["stdout"].append("------")
+        flines["stdout"].append("Band " + str(i + 1))
+        flines["stdout"].append("------\n")
+        flines["stdout"].append(
+            "band number    image number    file name                      energy / (eV)"
+        )
+        for j, _file in enumerate(sorted(energies[i])):
+            flines["stdout"].append(
+                "{:<3}            {:<4}            {:<30} {}".format(
+                    str(i + 1), str(j + 1), _file, energies[i][_file]
+                )
+            )
+        flines["stdout"].append("\nband energy : {}".format(NEB_energies[i]))
+        flines["stdout"].append("")
+
+    for _l in flines["stdout"]:
+        flines["file"].append(_l + "\n")
+
+    # print information about status of latest CASTEP dft runs
+    if len(progress) != 0:
+        flines["stdout"].append(
+            "Progress of DFT for most recent band (band " + str(Nbands) + ")\n"
+        )
+        flines["file"].append(flines["stdout"][-1] + "\n")
+
+        for _file in sorted(progress):
+            if progress[_file]:
+                flines["stdout"].append("\033[1;32m{}\033[1;m".format(_file))
+                flines["file"].append("{:<40} (complete)\n".format(_file))
+            else:
+                flines["stdout"].append("\033[1;31m{}\033[1;m".format(_file))
+                flines["file"].append("{:<40} (incomplete)\n".format(_file))
+
+        if not all([progress[_f] for _f in progress]):
+            flines["stdout"].append(
+                "\nDFT calculations have not finished on band {}, cannot iterate to next band yet".format(
+                    Nbands
+                )
+            )
+            flines["file"].append(flines["stdout"][-1] + "\n")
+        else:
+            flines["stdout"].append(
+                "\nDFT calculations for band {} are complete, have generated {} new images for band {}\n".format(
+                    Nbands, Nim - 2, Nbands + 1
+                )
+            )
+            flines["file"].append(flines["stdout"][-1] + "\n")
+
+            for i in range(1, Nim + 1):
+                _file = sys_name + "_" + str(Nbands + 1) + "-" + str(i) + ".castep"
+                if i == 1 or i == Nim:
+                    flines["stdout"].append("\033[1;32m{}\033[1;m".format(_file))
+                    flines["file"].append("{:<40} (complete)\n".format(_file))
+                else:
+                    flines["stdout"].append("\033[1;31m{}\033[1;m".format(_file))
+                    flines["file"].append("{:<40} (incomplete)\n".format(_file))
+
+        # write file
+        with open("summary.pyneb", "w") as f:
+            f.writelines(flines["file"])
+
+        # print to stdout
+        for _l in flines["stdout"]:
+            print(_l)
 
 
 if __name__ == "__main__":
