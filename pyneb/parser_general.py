@@ -1,9 +1,9 @@
 import sys, os, copy, pickle
 import numpy as np
 import pandas as pd
-import pyneb_parser_castep
-from pyneb_parser_castep import deprecate
-import pyneb_structureformat
+from pyneb import parser_castep
+from pyneb.parser_castep import deprecate
+from pyneb import structureformat
 from time import time
 
 
@@ -75,7 +75,7 @@ class GeneralInputParser:
 
         # interface to dft code parsers
         # self.implemented_dft_codes = {'vasp':parser_vasp.parse,'castep':parser_castep.parse}
-        self.implemented_dft_codes = {"castep": pyneb_parser_castep.parse}
+        self.implemented_dft_codes = {"castep": parser_castep.parse}
         # self.implemented_file_types = {'vasp':['vasprun','contcar'],'castep':['md','geom','castep','den_fmt']}
 
         # file extensions must be unique, search for duplicates
@@ -259,7 +259,7 @@ class GeneralInputParser:
 
         # sort structure objects into distinct structures
         def _merge_castep(name, idx_dict, keys):
-            s = pyneb_structureformat.supercell(fast=False)
+            s = structureformat.supercell(fast=False)
             s["name"] = name
             file_order = {"castep": 0, "den_fmt": 1, "md": 2}
 
@@ -354,7 +354,7 @@ class GeneralInputParser:
             # query all structure names on the stack and carry on from laste "structure_x" x value
             stack_names = []
             for obj in gc.get_objects():
-                if isinstance(obj, pyneb_structureformat.supercell):
+                if isinstance(obj, structureformat.supercell):
                     # check for supercells created by merge_supercells()
                     if (
                         getattr(obj, obj.get_methods["name"])().split("_")[0]

@@ -74,7 +74,8 @@ from pyneb.parsecell import (
 )
 from pyneb.parser_general import GeneralInputParser
 
-if __name__ == "__main__":
+
+def main():
     # check user is running on python3
     assert (
         version_info.major == 3
@@ -665,3 +666,7 @@ if __name__ == "__main__":
         len(neb.images[0].constraints),
         nebdir,
     )
+
+
+if __name__ == "__main__":
+    main()

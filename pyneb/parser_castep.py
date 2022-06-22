@@ -5,7 +5,7 @@ import os, sys, warnings
 import ase
 import copy
 from time import time
-from pyneb_structureformat import supercell
+from pyneb.structureformat import supercell
 import warnings
 
 
