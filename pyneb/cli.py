@@ -473,7 +473,9 @@ def main():
                 raise ValueError(f"Opt method not understood: {opt_method}")
 
             # perform 1 step, generating next iteration
-            qn.run(fmax=0.05, steps=1, castep_neb=True)
+            for im in neb.images[1:-1]:
+                im.calc.ignored_changes = {"positions"}
+            qn.run(fmax=0.05, steps=1)
 
             # cell file keywords from previous band
             keywords = fetchkeywords(sys_name + "_" + str(Nbands) + "-1.cell")
