@@ -7,6 +7,7 @@ import copy
 from time import time
 from pyneb.structureformat import supercell
 import warnings
+import ase.io
 
 
 def deprecate(fun):
@@ -162,25 +163,6 @@ def castep_get_unit_cells(lines, idx_unit_cell):
     return unitcells
 
 
-def castep_get_forces(lines, idx_forces):
-    num = len(idx_forces)
-    forces = [[]] * num
-    for j, ix in enumerate(idx_forces):
-        for i, line in enumerate(lines[ix:]):
-            if (
-                line == " ******************************************************"
-                or line
-                == " ******************************************************************************"
-            ):
-                tmp_end = i - 1
-                break
-        tmp_forces = [
-            list(filter(None, v.split(" "))) for v in lines[ix + 6 : ix + tmp_end]
-        ]
-        forces[j] = np.array([v[3:6] for v in tmp_forces], dtype=float)
-    return forces
-
-
 def castep_get_cell_content(lines, idx_cell_content):
     num = len(idx_cell_content)
     atoms, species = [[]] * num, [[]] * num
@@ -199,17 +181,6 @@ def castep_get_cell_content(lines, idx_cell_content):
         species[i] = [v[1] for v in config_lines]
         atoms[i] = np.array([v[3:6] for v in config_lines], dtype=float)
     return atoms, species
-
-
-def castep_get_stress(lines, idx_stress):
-    num = len(idx_stress)
-    stress = [[]] * num
-    for i, ix in enumerate(idx_stress):
-        stress[i] = np.array(
-            [list(filter(None, v.split(" ")))[2:5] for v in lines[ix + 6 : ix + 9]]
-        )
-    return stress
-
 
 def read_castep_castep(fd, index=None, safety_checks=False, check_completeness=True):
     """parse a .castep file of supported calculation type.
@@ -370,8 +341,12 @@ def read_castep_castep(fd, index=None, safety_checks=False, check_completeness=T
 
     supercells = castep_get_unit_cells(lines, idx_unit_cell)
     atoms, species = castep_get_cell_content(lines, idx_cell_content)
-    forces = castep_get_forces(lines, idx_forces)
-    stress = castep_get_stress(lines, idx_stress)
+
+    # use ASE to read forces & stress correctly
+    warnings.filterwarnings("ignore")
+    ase_atoms = ase.io.read(fd.name, format="castep-castep")
+    forces = [ase_atoms.get_forces()]
+    stress = [ase_atoms.get_stress(voigt=False)]
 
     if clc_type == "molecular dynamics":
         # in case of MD the last forces are repeated -> scratch those
@@ -479,384 +454,6 @@ def read_castep_castep(fd, index=None, safety_checks=False, check_completeness=T
     return structures
 
 
-def read_castep_geom(fd, index=None, units=units_CODATA2002):
-    """Reads a .geom file produced by the CASTEP GeometryOptimization task and
-    returns an atoms  object.
-    The information about total free energy and forces of each atom for every
-    relaxation step will be stored for further analysis especially in a
-    single-point calculator.
-    Note that everything in the .geom file is in atomic units, which has
-    been conversed to commonly used unit angstrom(length) and eV (energy).
-
-    Note that the index argument has no effect as of now.
-
-    Contribution by Wei-Bing Zhang. Thanks!
-
-    Routine now accepts a filedescriptor in order to out-source the *.gz and
-    *.bz2 handling to formats.py. Note that there is a fallback routine
-    read_geom() that behaves like previous versions did.
-
-    ENERGY PARSING NOT SUPPORTED YET
-    """
-    flines = fd.readlines()
-    # conversion factors from atomic to eV,A,GPa
-    factors = {
-        "t": units["t0"] * 1e15,  # fs
-        "E": units["Eh"],  # eV
-        "T": units["Eh"] / units["kB"],
-        "P": units["Eh"] / units["a0"] ** 3 * units["Pascal"] * 1e-9,  # GPa
-        "h": units["a0"],
-        "hv": units["a0"] / units["t0"],
-        "S": units["Eh"] / units["a0"] ** 3,
-        "R": units["a0"],
-        "V": np.sqrt(units["Eh"] / units["me"]),
-        "F": units["Eh"] / units["a0"],
-    }
-
-    # create a list of material properties for each configuration
-    energy_total = []  # 1. total energy
-    free_energy_total = []  # 2. total free energy
-    energy_0K = []  # 3. 0K total energy estimate
-    sedc_energy_total = []  # 4. sedc corrected total energy
-    sedc_free_energy_total = []  # 5. sedc corrected free energy
-    sedc_energy_0K = []  # 6. sedc corrected 0K energy estimate
-    MP_energy_total = []  # 7. Makov-Payne finite basis set corrected total energy
-    supercells = []  # 8. supercell vectors in cartesian
-    atoms = []  # 9. fractional coordinates of atoms
-    species = []  # 10. atom types
-    forces = []  # 11. atom cartesian force components /(eV/A)
-    stress = []  # 12. stress tensor / (GPa)
-
-    # only take information from the final (converged) configuration
-    for ia, line in enumerate(flines):
-        if len(line.split()) == 1:
-            readstart = ia
-            readend = len(flines) - 1
-
-    for ia, line in enumerate(flines):
-        if ia < readstart or ia > readend:
-            continue
-        elif " <-- E\n" in line:
-            # convert from Hartree to eV
-            # print ('energies: ',float(line.split()[0])*factors['E'], float(line.split()[1])*factors['E'])
-            energy_total += [float(line.split()[0]) * factors["E"]]
-        elif " <-- h\n" in line:
-            # 8.
-            supercells += [[float(_c) * factors["h"] for _c in line.split()[0:3]]]
-        elif " <-- S\n" in line:
-            # 12.
-            stress += [[float(_c) * factors["P"] for _c in line.split()[0:3]]]
-        elif " <-- R\n" in line:
-            # 9.
-            atoms += [[float(_c) * factors["h"] for _c in line.split()[2:5]]]
-            # 10.
-            species += [line.split()[0]]
-        elif " <-- F\n" in line:
-            forces += [[float(_c) * factors["F"] for _c in line.split()[2:5]]]
-
-    # check for .geom corruption
-    assert len(atoms) != 0 and len(species) != 0 and len(supercells) != 0, (
-        fd.name + " appears to be corrupt"
-    )
-
-    # convert cartesian to fractional coordinates of the cell vectors
-    invcell = np.linalg.inv(np.asarray(supercells))
-    for ia in range(len(atoms)):
-        r = [_c for _c in atoms[ia][0:3]]
-        for ib in range(3):
-            tmp = 0
-            for ic in range(3):
-                tmp += r[ic] * invcell[ic][ib]
-            atoms[ia][ib] = tmp
-
-    # set present properties
-    geomstruct = supercell()
-    info = dict()
-
-    if len(forces) == 1:
-        # atom forces
-        info.update({"forces": forces})
-    if len(stress) == 1:
-        # cauchy stress tensor
-        info.update({"stress": stress})
-    # NEED TO FIGURE OUT WHICH IS 0K ENERGY AND ADD TO CLASS v
-    if len(energy_0K) == 1:
-        print("need to figure what energy is")
-    info.update(
-        {
-            "cell": supercell,
-            "positions": atoms,
-            "species": species,
-            "files": fd.name.split("/")[-1],
-            "name": fd.name.split("/")[-1],
-        }
-    )
-    # INCONSISTENCIES WITH CASTEP FILE
-    #        getattr(geomstruct,geomstruct.set_methods['energy'])(0.0)
-    # geomstruct.set_energy(energy_total[0])
-    # NEED TO FIGURE OUT WHICH IS 0K ENERGY AND ADD TO CLASS ^
-
-    # Yeah, we know that...
-    # print('N.B.: Energy in .geom file is not 0K extrapolated.')
-    return [geomstruct(**info)]
-
-
-def read_castep_md(fd, index=None, return_scalars=False, units=units_CODATA2002):
-    """Reads a .md file written by a CASTEP MolecularDynamics task
-    and returns the trajectory stored therein as a list of atoms object.
-
-    Note that the index argument has no effect as of now.
-
-    ENERGY PARSING NOT SUPPORTED YET!!
-    """
-    flines = fd.readlines()
-    factors = {
-        "t": units["t0"] * 1e15,  # fs
-        "E": units["Eh"],  # eV
-        "T": units["Eh"] / units["kB"],
-        "P": units["Eh"] / units["a0"] ** 3 * units["Pascal"] * 1e-9,  # GPa
-        "h": units["a0"],
-        "hv": units["a0"] / units["t0"],
-        "S": units["Eh"] / units["a0"] ** 3,
-        "R": units["a0"],
-        "V": np.sqrt(units["Eh"] / units["me"]),
-        "F": units["Eh"] / units["a0"],
-    }
-
-    # fd is closed by embracing read() routine
-    t0 = time()
-
-    num_flines = len(flines)
-    print("time reading lines {} s...".format(time() - t0))
-
-    # readstart = [iv+1 for iv in range(num_flines) if 'END header' in flines[iv]][-1]
-    readstart = [iv - 1 for iv in range(num_flines) if "<-- E" == flines[iv][-6:-1]]
-
-    readend = num_flines - 1
-    readstart = readstart[1]
-    # print("readstart {} readend {}".format(readstart,readend))
-
-    # temperorary data
-    tmp_energy_total = []  # 1. total energy
-    tmp_free_energy_total = []  # 2. total free energy
-    tmp_energy_0K = []  # 3. 0K total energy estimate
-    tmp_sedc_energy_total = []  # 4. sedc corrected total energy
-    tmp_sedc_free_energy_total = []  # 5. sedc corrected free energy
-    tmp_sedc_energy_0K = []  # 6. sedc corrected 0K energy estimate
-    tmp_MP_energy_total = []  # 7. Makov-Payne finite basis set corrected total energy
-    tmp_supercell = []  # 8. supercell vectors in cartesian
-    tmp_atoms = []  # 9. fractional coordinates of atoms
-    tmp_species = []  # 10. atom types
-    tmp_forces = []  # 11. atom cartesian force components /(eV/A)
-    tmp_stress = []  # 12. stress tensor / (GPa)
-    energy_total = []  # 1. total energy
-    free_energy_total = []  # 2. total free energy
-    energy_0K = []  # 3. 0K total energy estimate
-    sedc_energy_total = []  # 4. sedc corrected total energy
-    sedc_free_energy_total = []  # 5. sedc corrected free energy
-    sedc_energy_0K = []  # 6. sedc corrected 0K energy estimate
-    MP_energy_total = []  # 7. Makov-Payne finite basis set corrected total energy
-    supercells = []  # 8. supercell vectors in cartesian
-    atoms = []  # 9. fractional coordinates of atoms
-    species = []  # 10. atom types
-    forces = []  # 11. atom cartesian force components /(eV/A)
-    stress = []  # 12. stress tensor / (GPa)
-
-    print("time reading lines {} s...".format(time() - t0))
-    # for ia,line in enumerate(flines):
-    t0 = time()
-    # num_energies_read = 0
-    for ia in range(num_flines):
-        line = flines[ia]
-        sline = line.rstrip("\n").split()
-        # if ia < 20:
-        #    print("line {} sline {}".format(line,sline))
-        if ia < readstart or ia > readend:
-            continue
-
-        elif len(sline) == 0 or ia == readend:
-            # beginning of another MD step or final MD step
-
-            if len(tmp_energy_total) != 0:
-                energy_total.append(tmp_energy_total)
-            if len(tmp_supercell) != 0:
-                supercells.append([_l for _l in tmp_supercell])
-            if len(tmp_atoms) != 0:
-                atoms.append([_a for _a in tmp_atoms])
-            if len(tmp_species) != 0:
-                species.append([_s for _s in tmp_species])
-            if len(tmp_stress) != 0:
-                stress.append([_s for _s in tmp_stress])
-            if len(tmp_forces) != 0:
-                forces.append([_f for _f in tmp_forces])
-
-            # reset tmp data structures
-            tmp_energy_total = []  # 1. total energy
-            tmp_free_energy_total = []  # 2. total free energy
-            tmp_energy_0K = []  # 3. 0K total energy estimate
-            tmp_sedc_energy_total = []  # 4. sedc corrected total energy
-            tmp_sedc_free_energy_total = []  # 5. sedc corrected free energy
-            tmp_sedc_energy_0K = []  # 6. sedc corrected 0K energy estimate
-            tmp_MP_energy_total = (
-                []
-            )  # 7. Makov-Payne finite basis set corrected total energy
-            tmp_supercell = []  # 8. supercell vectors in cartesian
-            tmp_atoms = []  # 9. fractional coordinates of atoms
-            tmp_species = []  # 10. atom types
-            tmp_forces = []  # 11. atom cartesian force components /(eV/A)
-            tmp_stress = []  # 12. stress tensor / (GPa)
-            # elif ' <-- E\n' in line:
-        elif "E" == sline[-1]:
-            # convert from Hartree to eV
-
-            tmp_energy_total = [float(sline[0]) * factors["E"]]
-
-            # elif ' <-- h\n' in line:
-        elif "h" == sline[-1]:
-            # 8.
-            tmp_supercell.append([float(_c) * factors["h"] for _c in sline[0:3]])
-            # elif ' <-- S\n' in line:
-        elif "S" == sline[-1]:
-            # 12.
-            tmp_stress.append([float(_c) * factors["P"] for _c in sline[0:3]])
-            # elif ' <-- R\n' in line:
-        elif "R" == sline[-1]:
-            # 9.
-            tmp_atoms.append([float(_c) * factors["h"] for _c in sline[2:5]])
-            # 10.
-            tmp_species.append(line.split()[0])
-        elif "F" == sline[-1]:
-            tmp_forces.append([float(_c) * factors["F"] for _c in sline[2:5]])
-    print("processing md file {} s...".format(time() - t0))
-
-    num_frames = len(energy_total)
-    print(
-        "forces {} supercells {} species {}".format(
-            len(forces), len(supercells), len(species)
-        )
-    )
-    assert (
-        num_frames > 0
-    ), "Assertion failed - expected to find at least one timestep, but found {}".format(
-        num_frames
-    )
-
-    t0 = time()
-    atoms = [
-        np.dot(
-            np.array(atoms[v], dtype=float),
-            np.linalg.inv(np.array(supercells[v], dtype=float)),
-        )
-        for v in range(num_frames)
-    ]
-    print("converting atoms to fspace {} s...".format(time() - t0))
-
-    md_structures = [[]] * num_frames
-
-    # parse .md data to in-house format
-    t0 = time()
-    for ia in range(num_frames):
-        info = dict()
-        tmp = supercell(fast=True)
-
-        # atom forces
-        if len(forces) > 0:
-            info.update({"forces": forces[ia]})
-
-        info.update(
-            {
-                "cell": supercells[ia],
-                "positions": atoms[ia],
-                "species": species[ia],
-                "files": [fd.name.split("/")[-1]],
-                "name": fd.name.split("/")[-1].split(".")[0] + "-" + str(ia) + ".md",
-            }
-        )
-
-        tmp(**info)
-        md_structures[ia] = tmp
-    print("storing md data {} s...".format(time() - t0))
-    return md_structures
-
-
-def read_castep_den_fmt(fd, style="array"):
-    """
-    extract electron density grid points from file fd.
-
-    Parmeters
-    ---------
-    fd:
-        a non-corrupt .den_fmt castep electron density fil
-    style: str
-        "array" or "dict", determines the format in which the information is returned.
-
-    Returns
-    -------
-    list of supercell instance
-        [class.supercell()] with density and supercell vector attributes allocated
-
-    """
-    flines = fd.readlines()
-
-    # fetch supercell vectors in cartesian coordinates / (A)
-    cell = np.array(
-        [list(filter(None, v.split(" ")))[:3] for v in flines[3:6]], dtype=float
-    )
-    # fetch [N1,N2,N3]; number of grid points along each cell vector
-    Npoints = np.array(list(filter(None, flines[8].split(" ")))[:3], dtype=int)
-    invNpoints = 1.0 / Npoints
-
-    tmp = np.array([list(filter(None, v.split(" "))) for v in flines[12:]], dtype=float)
-    points = np.dot((tmp[:, :3] - np.ones(3)) * invNpoints, cell)
-    density = tmp[:, 3]
-
-    # create and attribute supercell() structure class
-    tmp1 = supercell()
-    tmp1["edensity"] = {"xyz": points, "density": density}
-    tmp1["cell"] = cell  # set supercell vectors
-    tmp1["name"] = fd.name.split("/")[-1]  # set structure name
-    tmp1["files"] = [fd.name.split("/")[-1]]  # set file name
-
-    return [tmp1]
-
-
-def reduce_castep_den_fmt(fd):
-    """Reduce file size by removing entries below 1.0. Store as ascii text characters.
-
-    <fname>_reduced.den_fmt is written from <fname>.den_fmt
-
-    Notes
-    -----
-    if, instead of ascii text, were to represent single precision floating point in binary
-    digits, could further reduce the file size by a factor ~ 2.5. would require a formatted
-    binary parser
-    """
-
-    flines = fd.readlines()
-
-    for ia, line in enumerate(flines):
-        if "END header: data is" in line:
-            newflines = [
-                "# modified .den_fmt file format for reduced storage space\n"
-            ] + flines[: ia + 2]
-
-            for ib, _line in enumerate(flines[ia + 2 :]):
-                if float(_line.split()[3]) >= 1.0:
-                    newflines += _line
-
-    # write new reduced file
-    with open(fd.name.split(".")[0] + "_reduced.den_fmt", "w") as f:
-        f.writelines(newflines)
-
-
-_castep_supported_files = {
-    "castep": read_castep_castep,
-    "md": read_castep_md,
-    "geom": read_castep_geom,
-    "den_fmt": read_castep_den_fmt,
-}
-
-
 class parse:
     """Class to interface castep parsing with general parsing (end user) class
 
@@ -875,32 +472,18 @@ class parse:
     """
 
     def __init__(self, path, file_type):
-        self.implemented_file_types = ["md", "castep", "geom", "den_fmt"]
-
-        assert (
-            file_type in self.implemented_file_types
-        ), "Assertion failed - got unexpected file_type {}. Expected one of: {}".format(
-            file_type, self.implemented_file_types
-        )
+        assert file_type == "castep"
 
         self.file_type = file_type  # file type
         self.path = path  # full path to file
         self.supercells = None  # supercell
-
-        # internal interface from file type to parser function
-        self.internal_interface = {
-            "castep": read_castep_castep,
-            "md": read_castep_md,
-            "geom": read_castep_geom,
-            "den_fmt": read_castep_den_fmt,
-        }
 
     def run(self):
         """
         parse self.path
         """
         with open(self.path, "r") as f:
-            self.supercells = self.internal_interface[self.file_type](f)
+            self.supercells = read_castep_castep(f)
         # assert isinstance(self.supercells,list),'implementation error with parser'
 
     def get_supercells(self):
@@ -909,11 +492,3 @@ class parse:
             - a list of supercell structures
         """
         return self.supercells
-
-
-if __name__ == "__main__":
-    # reduce appropriate den.fmt files in size, in working directory
-    reduce_castep()
-
-    # parse supercell structures from all castep affiliated files
-    structure_list = parse_castep()

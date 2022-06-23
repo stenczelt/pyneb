@@ -4,13 +4,16 @@ module for in-house classes for data format and storage
 Contents:
     - supercell() : atomic supercell information
 
-es611@cam.ac.uk , atf29@cam.ac.uk  
+es611@cam.ac.uk , atf29@cam.ac.uk
 """
 
 #!/bin/env python3
 
 import numpy as np
-import copy, warnings
+import warnings
+import copy
+
+from ase.calculators.singlepoint import SinglePointCalculator
 
 
 def deprecate(fun):
@@ -677,11 +680,15 @@ class supercell:
         # return Atoms(atom_list,cell=self.cell,pbc=True)
 
         # version for neb modification of atoms.py
-        return Atoms(
+        ase_atoms = Atoms(
             atom_list,
             cell=self.cell,
             pbc=True,
-            castep_neb=True,
-            system_energy=self.energy,
-            system_forces=self.forces,
+            # castep_neb=True,
+            # system_energy=self.energy,
+            # system_forces=self.forces,
         )
+        spc = SinglePointCalculator(ase_atoms, energy=self.energy, forces=self.forces)
+        # spc.ignored_changes = set("positions")
+        ase_atoms.calc = spc
+        return ase_atoms

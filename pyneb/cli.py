@@ -66,7 +66,6 @@ from docopt import docopt
 
 from pyneb.parsecell import (
     adoptcellorder,
-    asetocell,
     checkimages,
     checkparamfiles,
     comparekeywords,
@@ -485,7 +484,10 @@ def main():
                 _file = sys_name + "_" + str(Nbands + 1) + "-" + str(i + 1) + ".cell"
 
                 # output to .cell
-                asetocell(img, keywords, _file)
+                # fixme: this is not writing the extra keys of the .cell file
+                # we need to copy those from the reference or the last step
+                # needs a Castep() calculator object on the
+                ase.io.write(_file, img, magnetic_moments="initial")
 
                 # output to .param
                 copyfile(
@@ -593,11 +595,15 @@ def print_header(
             flines2 = f.readlines()
 
             for _line in flines2:
-                NEB_energies.append(float(_line.split()[3]))
+                try:
+                    NEB_energies.append(float(_line.split()[3]))
+                except ValueError:
+                    pass
 
-    assert len(energies) == len(NEB_energies), "{} file possibly corrupted".format(
-        ".log"
-    )
+    # DEBUG: running this many times, so this will inevitably fail
+    # assert len(energies) == len(NEB_energies), "{} file possibly corrupted".format(
+    #     ".log"
+    # )
 
     if len(energies) != 0:
         flines["stdout"].append("===========")

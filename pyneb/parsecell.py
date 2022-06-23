@@ -1,6 +1,7 @@
 """
 routines for dealing with parsing an ase Atoms object to a .cell file
 """
+from ase.calculators.singlepoint import SinglePointCalculator
 
 ALLOWED_CELL_KEYWORDS = [
     "lattice_cart",
@@ -359,7 +360,7 @@ def adoptcellorder(castep_atoms, cell_atoms):
             ):
                 # if all([isclose(_cstppos[k],_cellpos[k],atol=0.0001) for k in range(3)]):
                 # copy atom forces
-                forces[i][:] = castep_atoms.forces[j][:]
+                forces[i][:] = castep_atoms.get_forces()[j, :]
 
                 # copy atom object
                 atoms_list[i] = cell_atoms[i]
@@ -370,12 +371,13 @@ def adoptcellorder(castep_atoms, cell_atoms):
     assert all([_c == 1 for _c in check]), "error reordering .castep atoms"
 
     # create new Atoms objects, borrow constraints from .cell file
-    return Atoms(
+    ase_atoms = Atoms(
         atoms_list,
         cell=cell_atoms.cell,
         pbc=True,
-        castep_neb=True,
-        system_energy=castep_atoms.energy,
-        system_forces=forces,
-        constraint=cell_atoms.constraints,
     )
+    ase_atoms.calc = SinglePointCalculator(
+        ase_atoms, energy=castep_atoms.get_potential_energy(), forces=forces
+    )
+
+    return ase_atoms
