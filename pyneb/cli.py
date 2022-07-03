@@ -1,10 +1,15 @@
 """Alternative CLI, using click & multiple endpoints"""
+import warnings
 from pathlib import Path
+from typing import Tuple, Union
 
 import ase.io
 import click
+from ase.calculators.castep import Castep
+from ase.calculators.singlepoint import SinglePointCalculator
 from ase.io.castep import read_param, write_param
 from ase.neb import NEB
+from ase.optimize import BFGS
 
 SUPP_OPT_METHODS = ("bfgs", "lbfgs", "mdmin", "fire")
 
@@ -98,15 +103,110 @@ def initial(
         write_param(f"{seed}_0-{i:0>2}.param", param, force_write=True)
 
 
+def read_castep_outputs(fn: Union[Path, str]) -> Tuple[ase.Atoms, Castep]:
+    """Reads CASTEP output and wraps the results into SPC
+
+    we need to keep the calculator though, because that supplies
+    the castep cell/param keys
+    """
+    # read
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        atoms: ase.Atoms = ase.io.read(fn)
+
+    # Castep calculator: disallow calculation, it should have been done already
+    def disallow_calculation(*args, **kwargs):
+        raise NotImplementedError
+
+    castep_calc: Castep = atoms.calc
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        castep_calc.update = disallow_calculation
+
+    # change calculator
+    spc = SinglePointCalculator(
+        atoms,
+        energy=atoms.get_potential_energy(),
+        forces=atoms.get_forces(),
+    )
+    atoms.calc = spc
+
+    # preserve cell & param keys
+    atoms_cell = ase.io.read(str(fn).replace(".castep", ".cell"))
+    param = read_param(str(fn).replace(".castep", ".param"))
+    castep_calc.cell = atoms_cell.calc.cell
+    castep_calc.param = param.param
+
+    return atoms, castep_calc
+
+
 @main.command("step")
-def step():
+@click.argument("last_step", type=click.INT)
+@click.argument("seed", type=click.STRING)
+def step(
+    last_step: int,
+    seed: str = "neb-calc",
+):
     """NEB step: interpret current results & write new band
 
     steps:
     1. need to read the saved settings (neb_dir/...)
 
     """
-    raise NotImplementedError
+
+    # ends
+    cell_start = Path(f"{seed}_start.castep")
+    cell_end = Path(f"{seed}_end.castep")
+
+    # interim ones
+    interim = Path(".").glob(f"{seed}_{last_step}-*.castep")
+
+    # read the whole band
+    at0, calc0 = read_castep_outputs(cell_start)
+    images = [at0]
+    castep_calculators = [calc0]
+    for pth in sorted(interim):
+        print(pth)
+        at, calc = read_castep_outputs(pth)
+        images.append(at)
+        castep_calculators.append(calc)
+    at1, calc1 = read_castep_outputs(cell_end)
+    images.append(at1)
+    castep_calculators.append(calc1)
+
+    # actual NEB
+    neb = NEB(
+        images,
+        method="string",
+    )
+    neb_opt = BFGS(neb)
+
+    # perform 1 step, generating next iteration
+    for im in neb.images[1:-1]:
+        im.calc.ignored_changes = {"positions"}
+    neb_opt.run(fmax=0.05, steps=1)
+
+    # write the NEW interim images
+    num_images = len(images) - 2
+
+    current_step = last_step + 1
+    ase.io.write(f"{seed}_band{current_step}.xyz", images)
+    for i in range(1, num_images + 1):
+        # set the calculator back -> keep the .cell keys
+        calc = castep_calculators[i]
+        atoms = images[i]
+        atoms.calc = calc
+
+        ase.io.write(
+            f"{seed}_{current_step}-{i:0>2}.cell",
+            atoms,
+            magnetic_moments="initial",
+        )
+        write_param(
+            f"{seed}_{current_step}-{i:0>2}.param",
+            calc.param,
+            force_write=True,
+        )
 
 
 if __name__ == "__main__":
