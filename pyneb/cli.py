@@ -1,11 +1,12 @@
 """Alternative CLI, using click & multiple endpoints"""
+import re
 import warnings
 from pathlib import Path
 from typing import Tuple, Union
 
 import ase.io
 import click
-from ase.calculators.castep import Castep
+from ase.calculators.castep import Castep, CastepParam
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.io.castep import read_param, write_param
 from ase.neb import NEB
@@ -103,6 +104,18 @@ def initial(
         write_param(f"{seed}_0-{i:0>2}.param", param, force_write=True)
 
 
+def read_de_dlog(fn: Union[Path, str]):
+    with Path(fn).open("r") as file:
+        lines = file.readlines()
+
+    pattern = re.compile(r"finite basis dEtot/dlog\(Ecut\) =\s+(-\d+\.\d+)\s?eV")
+    for line in lines:
+        m = pattern.search(line)
+        if m:
+            return float(m.group(1))
+    return None
+
+
 def read_castep_outputs(fn: Union[Path, str]) -> Tuple[ase.Atoms, Castep]:
     """Reads CASTEP output and wraps the results into SPC
 
@@ -140,12 +153,32 @@ def read_castep_outputs(fn: Union[Path, str]) -> Tuple[ase.Atoms, Castep]:
     return atoms, castep_calc
 
 
+def set_reuse(params: CastepParam, checkpoint: str):
+    """Set reuse of checkpoint file in parameters"""
+    params.continuation = None
+    params.reuse = checkpoint
+
+
+def set_finite_basis(params: CastepParam, castep_fn: Union[Path, str]):
+    de_dlog = read_de_dlog(castep_fn)
+
+    if de_dlog is None:
+        return
+
+    params.finite_basis_corr = 1
+    params.basis_de_dloge = de_dlog
+
+
 @main.command("step")
 @click.argument("last_step", type=click.INT)
 @click.argument("seed", type=click.STRING)
+@click.option("--reuse", "-r", is_flag=True)
+@click.option("--finite-basis", "-fb", is_flag=True)
 def step(
     last_step: int,
     seed: str = "neb-calc",
+    reuse: bool = False,
+    finite_basis: bool = False,
 ):
     """NEB step: interpret current results & write new band
 
@@ -202,6 +235,12 @@ def step(
             atoms,
             magnetic_moments="initial",
         )
+
+        if reuse:
+            set_reuse(calc.param, f"{seed}_{last_step}-{i:0>2}.check")
+        if finite_basis:
+            set_finite_basis(calc.param, f"{seed}_{last_step}-{i:0>2}.castep")
+
         write_param(
             f"{seed}_{current_step}-{i:0>2}.param",
             calc.param,
