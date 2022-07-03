@@ -8,7 +8,7 @@ setuptools.setup(
     name="pyneb",
     version="0.1.0",
     packages=setuptools.find_packages(),
-    install_requires=["numpy", "ase", "docopt"],
+    install_requires=["numpy", "ase", "docopt", "click"],
     entry_points="""
     [console_scripts]
     pyneb=pyneb.cli:main
