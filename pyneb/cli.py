@@ -3,6 +3,7 @@ from pathlib import Path
 
 import ase.io
 import click
+from ase.io.castep import read_param, write_param
 from ase.neb import NEB
 
 SUPP_OPT_METHODS = ("bfgs", "lbfgs", "mdmin", "fire")
@@ -74,19 +75,27 @@ def initial(
     # add interim images
     images = [at_start]
     for _ in range(num_images):
-        images.append(at_start.copy())
+        # copy & keep the .cell keys
+        new_image = at_start.copy()
+        new_image.calc = at_start.calc
+        images.append(new_image)
     images.append(at_end)
 
     # construct NEB
     neb = NEB(images)
     neb.interpolate(method=interpolation_method, mic=True)
 
+    # read params
+    param = read_param(param_file).param
+
+    # end point needs param file
+    write_param(f"{seed}_end.param", param, force_write=True)
+
     # write the interim images (endpoints are the input)
     ase.io.write(f"{seed}_band0.xyz", images)
     for i in range(1, num_images + 1):
-        ase.io.write(f"{seed}_0-{i:0>2}.cell", images[i])
-
-    raise NotImplementedError
+        ase.io.write(f"{seed}_0-{i:0>2}.cell", images[i], magnetic_moments="initial")
+        write_param(f"{seed}_0-{i:0>2}.param", param, force_write=True)
 
 
 @main.command("step")
@@ -98,3 +107,7 @@ def step():
 
     """
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    main()
