@@ -2,7 +2,7 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 import ase.io
 import click
@@ -169,24 +169,7 @@ def set_finite_basis(params: CastepParam, castep_fn: Union[Path, str]):
     params.basis_de_dloge = de_dlog
 
 
-@main.command("step")
-@click.argument("last_step", type=click.INT)
-@click.argument("seed", type=click.STRING)
-@click.option("--reuse", "-r", is_flag=True)
-@click.option("--finite-basis", "-fb", is_flag=True)
-def step(
-    last_step: int,
-    seed: str = "neb-calc",
-    reuse: bool = False,
-    finite_basis: bool = False,
-):
-    """NEB step: interpret current results & write new band
-
-    steps:
-    1. need to read the saved settings (neb_dir/...)
-
-    """
-
+def read_images(seed: str, last_step: int) -> Tuple[List[ase.Atoms], List[Castep]]:
     # ends
     cell_start = Path(f"{seed}_start.castep")
     cell_end = Path(f"{seed}_end.castep")
@@ -206,6 +189,30 @@ def step(
     at1, calc1 = read_castep_outputs(cell_end)
     images.append(at1)
     castep_calculators.append(calc1)
+
+    return images, castep_calculators
+
+
+@main.command("step")
+@click.argument("last_step", type=click.INT)
+@click.argument("seed", type=click.STRING)
+@click.option("--reuse", "-r", is_flag=True)
+@click.option("--finite-basis", "-fb", is_flag=True)
+def step(
+    last_step: int,
+    seed: str = "neb-calc",
+    reuse: bool = False,
+    finite_basis: bool = False,
+):
+    """NEB step: interpret current results & write new band
+
+    steps:
+    1. need to read the saved settings (neb_dir/...)
+
+    """
+
+    # read
+    images, castep_calculators = read_images(seed, last_step)
 
     # actual NEB
     neb = NEB(
@@ -239,13 +246,43 @@ def step(
         if reuse:
             set_reuse(calc.param, f"{seed}_{last_step}-{i:0>2}.check")
         if finite_basis:
-            set_finite_basis(calc.param, f"{seed}_{last_step}-{i:0>2}.castep")
+            set_finite_basis(calc.param, f"{seed}_0-{i:0>2}.castep")
 
         write_param(
             f"{seed}_{current_step}-{i:0>2}.param",
             calc.param,
             force_write=True,
         )
+
+
+@main.command("refine")
+@click.argument("last_step", type=click.INT)
+@click.argument("seed", type=click.STRING)
+@click.option("num_images", type=click.INT)
+def step(
+    last_step: int,
+    num_images: int,
+    seed: str = "neb-calc",
+):
+    """Refine around the TS guess
+
+    Having bracketed the TS, we can interpolate around it
+
+    """
+
+    # read
+    images, castep_calculators = read_images(seed, last_step)
+
+    # find the TS guess
+    ts_index = images.index(min(images, key=lambda x: x.get_potential_energy()))
+
+    print(ts_index)
+
+    # actual NEB
+    neb = NEB(
+        images,
+        method="string",
+    )
 
 
 if __name__ == "__main__":
