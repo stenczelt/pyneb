@@ -1,0 +1,1649 @@
+ +-------------------------------------------------+
+ |                                                 |
+ |      CCC   AA    SSS  TTTTT  EEEEE  PPPP        |
+ |     C     A  A  S       T    E      P   P       |
+ |     C     AAAA   SS     T    EEE    PPPP        |
+ |     C     A  A     S    T    E      P           |
+ |      CCC  A  A  SSS     T    EEEEE  P           |
+ |                                                 |
+ +-------------------------------------------------+
+ |                                                 |
+ | Welcome to Academic Release CASTEP version 21.11|          
+ | Ab Initio Total Energy Program                  |
+ |                                                 |
+ | Authors:                                        |
+ | M. Segall, M. Probert, C. Pickard, P. Hasnip,   |
+ | S. Clark, K. Refson, J. R. Yates, M. Payne      |
+ |                                                 |
+ | Contributors:                                   |
+ | P. Lindan, P. Haynes, J. White, V. Milman,      |
+ | N. Govind, M. Gibson, P. Tulip, V. Cocula,      |
+ | B. Montanari, D. Quigley, M. Glover,            |
+ | L. Bernasconi, A. Perlov, M. Plummer,           |
+ | E. McNellis, J. Meyer, J. Gale, D. Jochym       |
+ | J. Aarons, B. Walker, R. Gillen, D. Jones       |
+ | T. Green, I. J. Bush, C. J. Armstrong,          |
+ | E. J. Higgins, E. L. Brown, M. S. McFly,        |
+ | J. Wilkins, B-C. Shih, P. J. P. Byrne,          |
+ | R. J. Maurer, J. C. Womack, J. Dziedzic,        |
+ | A. Bartok-Partay, L. LeBlanc                    |
+ |                                                 |
+ | Copyright (c) 2000 - 2021                       |
+ |                                                 |
+ |     Distributed under license from Cambridge    |
+ |     Enterprise for academic use only.           |
+ |                                                 |
+ | Please cite                                     |
+ |                                                 |
+ |     "First principles methods using CASTEP"     |
+ |                                                 |
+ |         Zeitschrift fuer Kristallographie       |
+ |           220(5-6) pp. 567-570 (2005)           |
+ |                                                 |
+ | S. J. Clark, M. D. Segall, C. J. Pickard,       |
+ | P. J. Hasnip, M. J. Probert, K. Refson,         |
+ | M. C. Payne                                     |
+ |                                                 |
+ |       in all publications arising from          |
+ |              your use of CASTEP                 |
+ |                                                 |
+ +-------------------------------------------------+
+ |                                                 |
+ |              http://www.castep.org              |
+ |                                                 |
+ +-------------------------------------------------+
+ 
+ 
+ 
+ Compiled for linux_x86_64_cray-XT on Tue, 01 Mar 2022 09:19:15 +0000
+ from code version 7d4405a8a+  HEAD  Sat Nov 27 13:38:33 2021 +0000
+ Compiler: Cray Fortran 12.0.3; Optimisation: fast
+ MATHLIBS: LibSci (LAPACK version 3.6.1)
+ FFT Lib : fftw3 version commercial-fftw-3.3.8-sse2-avx-avx2-avx2_128
+ Fundamental constants values: CODATA 2014
+ 
+ Run started: Mon, 27 Jun 2022 07:22:41 -0100
+ Warning in parameters_read: presetting of magnetic moments on atoms cannot be guaranteed when metals_method /= density mixing
+ 
+ Atomic calculation performed for H: 1s1
+ 
+ Converged in 41 iterations to an ae energy of -12.488 eV
+ 
+   ============================================================                
+   | Pseudopotential Report - Date of generation 27-06-2022   |                
+   ------------------------------------------------------------                
+   | Element: H Ionic charge:  1.00 Level of theory: PBE      |                
+   | Atomic Solver: Koelling-Harmon                           |                
+   |                                                          |                
+   |               Reference Electronic Structure             |                
+   |         Orbital         Occupation         Energy        |                
+   |            1s              1.000           -0.239        |                
+   |                                                          |                
+   |                 Pseudopotential Definition               |                
+   |        Beta     l      e      Rc     scheme   norm       |                
+   |          1      0   -0.239   0.599     qc      0         |                
+   |          2      0    0.250   0.599     qc      0         |                
+   |         loc     1    0.000   0.599     pn      0         |                
+   |                                                          |                
+   | Augmentation charge Rinner = 0.421                       |                
+   | No partial core correction                               |                
+   ------------------------------------------------------------                
+   | "1|0.6|13|15|17|10(qc=8)"                                |                
+   ------------------------------------------------------------                
+   |      Author: Chris J. Pickard, Cambridge University      |                
+   ============================================================                
+ 
+ Atomic calculation performed for Fe: 1s2 2s2 2p6 3s2 3p6 3d6 4s2
+ 
+ Converged in 96 iterations to an ae energy of -34625.101 eV
+ 
+   ============================================================                
+   | Pseudopotential Report - Date of generation 27-06-2022   |                
+   ------------------------------------------------------------                
+   | Element: Fe Ionic charge:  8.00 Level of theory: PBE     |                
+   | Atomic Solver: Koelling-Harmon                           |                
+   |                                                          |                
+   |               Reference Electronic Structure             |                
+   |         Orbital         Occupation         Energy        |                
+   |            3d              6.000           -0.276        |                
+   |            4s              2.000           -0.194        |                
+   |                                                          |                
+   |                 Pseudopotential Definition               |                
+   |        Beta     l      e      Rc     scheme   norm       |                
+   |          1      0   -0.194   2.399     qc      0         |                
+   |          2      0    0.250   2.399     qc      0         |                
+   |          3      1    0.000   2.399     qc      0         |                
+   |          4      1    0.250   2.399     qc      0         |                
+   |          5      2   -0.276   1.997     qc      0         |                
+   |          6      2    0.250   1.997     qc      0         |                
+   |         loc     3    0.000   2.399     pn      0         |                
+   |                                                          |                
+   | Augmentation charge Rinner = 1.000                       |                
+   | Partial core correction Rc = 1.000                       |                
+   ------------------------------------------------------------                
+   | "3|2.4|2.4|1.0|8|9|10|40:41:32U2U2(qc=5.5)"              |                
+   ------------------------------------------------------------                
+   |      Author: Chris J. Pickard, Cambridge University      |                
+   ============================================================                
+ 
+ Pseudo atomic calculation performed for H 1s1
+ 
+ Converged in 16 iterations to a total energy of -12.4388 eV
+ 
+ Pseudo atomic calculation performed for Fe 3d6 4s2
+ 
+ Converged in 39 iterations to a total energy of -853.7730 eV
+ Calculation parallelised over 128 processes.
+ Data is distributed by G-vector(16-way) and k-point(8-way)
+
+ ************************************ Title ************************************
+ 
+
+ ***************************** General Parameters ******************************
+  
+ output verbosity                               : normal  (1)
+ write checkpoint data to                       : neb-calc_1-8.check
+ type of calculation                            : single point energy
+ stress calculation                             : on
+ density difference calculation                 : off
+ electron localisation func (ELF) calculation   : off
+ Hirshfeld analysis                             : off
+ polarisation (Berry phase) analysis            : off
+ molecular orbital projected DOS                : off
+ deltaSCF calculation                           : off
+ unlimited duration calculation
+ timing information                             : on
+ memory usage estimate                          : on
+ write extra output files                       : on
+ write final potential to formatted file        : off
+ write final density to formatted file          : off
+ write BibTeX reference list                    : on
+ write OTFG pseudopotential files               : on
+ write electrostatic potential file             : on
+ write bands file                               : on
+ checkpoint writing                             : both castep_bin and check files
+  
+ output         length unit                     : A
+ output           mass unit                     : amu
+ output           time unit                     : ps
+ output         charge unit                     : e
+ output           spin unit                     : hbar/2
+ output         energy unit                     : eV
+ output          force unit                     : eV/A
+ output       velocity unit                     : A/ps
+ output       pressure unit                     : GPa
+ output     inv_length unit                     : 1/A
+ output      frequency unit                     : cm-1
+ output force constant unit                     : eV/A**2
+ output         volume unit                     : A**3
+ output   IR intensity unit                     : (D/A)**2/amu
+ output         dipole unit                     : D
+ output         efield unit                     : eV/A/e
+ output        entropy unit                     : J/mol/K
+ output    efield chi2 unit                     : pm/V
+  
+ wavefunctions paging                           : none
+ random number generator seed                   : randomised (72241400)
+ data distribution                              : optimal for this architecture
+ optimization strategy                          : balance speed and memory
+
+ *********************** Exchange-Correlation Parameters ***********************
+  
+ using functional                               : Perdew Burke Ernzerhof
+ relativistic treatment                         : Koelling-Harmon
+ DFT+D: Semi-empirical dispersion correction    : off
+
+ ************************* Pseudopotential Parameters **************************
+  
+ pseudopotential representation                 : reciprocal space
+ <beta|phi> representation                      : reciprocal space
+ spin-orbit coupling                            : off
+
+ **************************** Basis Set Parameters *****************************
+  
+ plane wave basis set cut-off                   :   400.0000   eV
+ size of standard grid                          :     1.7500
+ size of   fine   gmax                          :    17.9311   1/A
+ finite basis set correction                    : automatic
+ number of sample energies                      :          3
+           sample  spacing                      :     5.0000   eV
+
+ **************************** Electronic Parameters ****************************
+  
+ number of  electrons                           :  398.0    
+ net charge of system                           :  0.000    
+ net spin   of system                           :  120.0    
+ number of  up  spins                           :  259.0    
+ number of down spins                           :  139.0    
+ treating system as spin-polarized
+ number of bands                                :       1036
+ electron temperature                           :     0.0000   K
+
+ ********************* Electronic Minimization Parameters **********************
+  
+ Method: Treating system as metallic with ensemble DFT treatment of electrons,
+         and number of  SD  steps               :          1
+         and number of  CG  steps               :          4
+  
+ total energy / atom convergence tol.           : 0.1000E-06   eV
+ max force / atom convergence tol.              : ignored
+ convergence tolerance window                   :          3   cycles
+ max. number of SCF cycles                      :        200
+ number of fixed-spin iterations                :         10
+ smearing scheme                                : Gaussian
+ smearing width                                 : 0.2000       eV
+ Fermi energy convergence tolerance             : 0.2721E-13   eV
+ number of occupancy cycles                     :          6
+ periodic dipole correction                     : NONE
+
+ *********************** Population Analysis Parameters ************************
+  
+ Population analysis with cutoff                :  3.000       A
+ Population analysis output                     : summary and pdos components
+
+ *******************************************************************************
+  
+ 
+                           -------------------------------
+                                      Unit Cell
+                           -------------------------------
+        Real Lattice(A)                      Reciprocal Lattice(1/A)
+     8.0127110     0.0000000     0.0000000        0.784152244   0.000000000   0.000000000
+     0.0000000     8.4987630     0.0000000        0.000000000   0.739305862   0.000000000
+     0.0000000     0.0000000    18.0000000        0.000000000   0.000000000   0.349065850
+ 
+                       Lattice parameters(A)       Cell Angles
+                    a =      8.012711          alpha =   90.000000
+                    b =      8.498763          beta  =   90.000000
+                    c =     18.000000          gamma =   90.000000
+ 
+                       Current cell volume =          1225.766372       A**3
+                                   density =             2.198356   AMU/A**3
+                                           =             3.650456     g/cm^3
+ 
+                           -------------------------------
+                                     Cell Contents
+                           -------------------------------
+                         Total number of ions in cell =   62
+                      Total number of species in cell =    2
+                        Max number of any one species =   48
+ 
+            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            x  Element    Atom        Fractional coordinates of atoms  x
+            x            Number           u          v          w      x
+            x----------------------------------------------------------x
+            x  H            1         0.343034   0.419350   0.228478   x 
+            x  H            2         0.434173   0.625292   0.223648   x 
+            x  H            3         0.626720   0.560791   0.310472   x 
+            x  H            4         0.154167   0.348755   0.214684   x 
+            x  H            5         0.702792   0.406509   0.225238   x 
+            x  H            6         0.193931   0.747197   0.226460   x 
+            x  H            7         0.962397   0.579442   0.223409   x 
+            x  H            8         0.701154   0.751895   0.225604   x 
+            x  H            9         0.454729   0.910623   0.229505   x 
+            x  H           10         0.207224   0.074576   0.228174   x 
+            x  H           11         0.950868   0.910825   0.227348   x 
+            x  H           12         0.698682   0.075438   0.229368   x 
+            x  H           13         0.466852   0.235897   0.231505   x 
+            x  H           14         0.939621   0.242939   0.226898   x 
+            x  Fe           1         0.783320   0.579230   0.268369   x 
+            x  Fe           2         0.014339   0.574330   0.389466   x 
+            x  Fe           3         0.018640   0.744196   0.278478   x 
+            x  Fe           4         0.770197   0.910833   0.279245   x 
+            x  Fe           5         0.765141   0.740614   0.390349   x 
+            x  Fe           6         0.014280   0.910164   0.390212   x 
+            x  Fe           7         0.018868   0.076545   0.278210   x 
+            x  Fe           8         0.766502   0.242132   0.279604   x 
+            x  Fe           9         0.765117   0.075969   0.391144   x 
+            x  Fe          10         0.015026   0.242096   0.389943   x 
+            x  Fe          11         0.017804   0.409461   0.276768   x 
+            x  Fe          12         0.765459   0.408560   0.390772   x 
+            x  Fe          13         0.268396   0.580514   0.277937   x 
+            x  Fe          14         0.505328   0.576907   0.394928   x 
+            x  Fe          15         0.520899   0.749131   0.279874   x 
+            x  Fe          16         0.268708   0.909542   0.279096   x 
+            x  Fe          17         0.262491   0.743175   0.390674   x 
+            x  Fe          18         0.515037   0.909015   0.392074   x 
+            x  Fe          19         0.519293   0.072946   0.281821   x 
+            x  Fe          20         0.269675   0.244015   0.275853   x 
+            x  Fe          21         0.264787   0.075851   0.389840   x 
+            x  Fe          22         0.514210   0.242354   0.391354   x 
+            x  Fe          23         0.517833   0.410486   0.277757   x 
+            x  Fe          24         0.263041   0.408899   0.389858   x 
+            x  Fe          25         0.762244   0.574178   0.503765   x 
+            x  Fe          26         0.013617   0.572194   0.614439   x 
+            x  Fe          27         0.012195   0.740555   0.502864   x 
+            x  Fe          28         0.762687   0.907786   0.503516   x 
+            x  Fe          29         0.763505   0.738429   0.615185   x 
+            x  Fe          30         0.013492   0.905319   0.614434   x 
+            x  Fe          31         0.012386   0.074350   0.503117   x 
+            x  Fe          32         0.762652   0.240925   0.503608   x 
+            x  Fe          33         0.763513   0.072195   0.615040   x 
+            x  Fe          34         0.013491   0.239069   0.614436   x 
+            x  Fe          35         0.012267   0.407983   0.502894   x 
+            x  Fe          36         0.763503   0.405964   0.615186   x 
+            x  Fe          37         0.261489   0.574234   0.503277   x 
+            x  Fe          38         0.513228   0.572198   0.615235   x 
+            x  Fe          39         0.512132   0.741298   0.504641   x 
+            x  Fe          40         0.262098   0.908471   0.503282   x 
+            x  Fe          41         0.263357   0.738786   0.614244   x 
+            x  Fe          42         0.513385   0.905372   0.614899   x 
+            x  Fe          43         0.512502   0.074685   0.504018   x 
+            x  Fe          44         0.261977   0.240391   0.502895   x 
+            x  Fe          45         0.263377   0.072194   0.614466   x 
+            x  Fe          46         0.513385   0.239016   0.614898   x 
+            x  Fe          47         0.512075   0.407321   0.504159   x 
+            x  Fe          48         0.263360   0.405608   0.614245   x 
+            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ 
+ 
+                         No user defined ionic velocities
+ 
+                           -------------------------------
+                                   Details of Species
+                           -------------------------------
+ 
+                               Mass of species in AMU
+                                    H    1.0079400
+                                    Fe   55.8450000
+ 
+                          Electric Quadrupole Moment (Barn)
+                                    H    0.0028600 Isotope  2
+                                    Fe    0.1600000 Isotope 57
+         xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         |  Element    Atom         Initial            Initial magnetic       |
+         |            Number    spin polarization        moment (uB)     Fix? |
+         |--------------------------------------------------------------------|
+         | H              1         0.000000              0.000       F       |
+         | H              2         0.000000              0.000       F       |
+         | H              3         0.000000              0.000       F       |
+         | H              4         0.000000              0.000       F       |
+         | H              5         0.000000              0.000       F       |
+         | H              6         0.000000              0.000       F       |
+         | H              7         0.000000              0.000       F       |
+         | H              8         0.000000              0.000       F       |
+         | H              9         0.000000              0.000       F       |
+         | H             10         0.000000              0.000       F       |
+         | H             11         0.000000              0.000       F       |
+         | H             12         0.000000              0.000       F       |
+         | H             13         0.000000              0.000       F       |
+         | H             14         0.000000              0.000       F       |
+         | Fe             1         0.312500              2.500       F       |
+         | Fe             2         0.312500              2.500       F       |
+         | Fe             3         0.312500              2.500       F       |
+         | Fe             4         0.312500              2.500       F       |
+         | Fe             5         0.312500              2.500       F       |
+         | Fe             6         0.312500              2.500       F       |
+         | Fe             7         0.312500              2.500       F       |
+         | Fe             8         0.312500              2.500       F       |
+         | Fe             9         0.312500              2.500       F       |
+         | Fe            10         0.312500              2.500       F       |
+         | Fe            11         0.312500              2.500       F       |
+         | Fe            12         0.312500              2.500       F       |
+         | Fe            13         0.312500              2.500       F       |
+         | Fe            14         0.312500              2.500       F       |
+         | Fe            15         0.312500              2.500       F       |
+         | Fe            16         0.312500              2.500       F       |
+         | Fe            17         0.312500              2.500       F       |
+         | Fe            18         0.312500              2.500       F       |
+         | Fe            19         0.312500              2.500       F       |
+         | Fe            20         0.312500              2.500       F       |
+         | Fe            21         0.312500              2.500       F       |
+         | Fe            22         0.312500              2.500       F       |
+         | Fe            23         0.312500              2.500       F       |
+         | Fe            24         0.312500              2.500       F       |
+         | Fe            25         0.312500              2.500       F       |
+         | Fe            26         0.312500              2.500       F       |
+         | Fe            27         0.312500              2.500       F       |
+         | Fe            28         0.312500              2.500       F       |
+         | Fe            29         0.312500              2.500       F       |
+         | Fe            30         0.312500              2.500       F       |
+         | Fe            31         0.312500              2.500       F       |
+         | Fe            32         0.312500              2.500       F       |
+         | Fe            33         0.312500              2.500       F       |
+         | Fe            34         0.312500              2.500       F       |
+         | Fe            35         0.312500              2.500       F       |
+         | Fe            36         0.312500              2.500       F       |
+         | Fe            37         0.312500              2.500       F       |
+         | Fe            38         0.312500              2.500       F       |
+         | Fe            39         0.312500              2.500       F       |
+         | Fe            40         0.312500              2.500       F       |
+         | Fe            41         0.312500              2.500       F       |
+         | Fe            42         0.312500              2.500       F       |
+         | Fe            43         0.312500              2.500       F       |
+         | Fe            44         0.312500              2.500       F       |
+         | Fe            45         0.312500              2.500       F       |
+         | Fe            46         0.312500              2.500       F       |
+         | Fe            47         0.312500              2.500       F       |
+         | Fe            48         0.312500              2.500       F       |
+         xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ 
+ 
+                          Files used for pseudopotentials:
+                                    H 1|0.6|13|15|17|10(qc=8)
+                                    Fe 3|2.4|2.4|1.0|8|9|10|40:41:32U2U2(qc=5.5)
+ 
+                           -------------------------------
+                              k-Points For BZ Sampling
+                           -------------------------------
+                       MP grid size for SCF calculation is  4  4  1
+                            with an offset of   0.000  0.000  0.000
+                       Number of kpoints used =   8
+ 
+                           -------------------------------
+                               Symmetry and Constraints
+                           -------------------------------
+ 
+                      Maximum deviation from symmetry =  0.00000         ANG
+ 
+                      Number of symmetry operations   = 1
+                      Number of ionic constraints     = 3
+                      Point group of crystal =     1: C1, 1, 1
+                      Space group of crystal =     1: P1, P 1
+ 
+             Set iprint > 1 for details on symmetry rotations/translations
+ 
+                         Centre of mass is constrained
+             Set iprint > 1 for details of linear ionic constraints
+ 
+                         Number of cell constraints= 0
+                         Cell constraints are:  1 2 3 4 5 6
+ 
+                         External pressure/stress (GPa)
+                          0.00000   0.00000   0.00000
+                                    0.00000   0.00000
+                                              0.00000
+  
++---------------- MEMORY AND SCRATCH DISK ESTIMATES PER PROCESS --------------+
+|                                                     Memory          Disk    |
+| Baseline code, static data and system overhead      771.0 MB         0.0 MB |
+| BLAS internal memory storage                          0.0 MB         0.0 MB |
+| Model and support data                              262.5 MB        43.6 MB |
+| Electronic energy minimisation requirements         456.9 MB         0.0 MB |
+| Force calculation requirements                        3.7 MB         0.0 MB |
+| Stress calculation requirements                       3.7 MB         0.0 MB |
+|                                               ----------------------------- |
+| Approx. total storage required per process         1490.3 MB        43.6 MB |
+|                                                                             |
+| Requirements will fluctuate during execution and may exceed these estimates |
++-----------------------------------------------------------------------------+
+Calculating finite basis set correction with  3 cut-off energies.
+Calculating total energy with cut-off of  390.000 eV.
+Calculating approximate eigenstates for fixed initial Hamiltonian
+Cut-off for approx. calculation is  159.419 eV
+Improving approx. states at cut-off of  217.691 eV
+Resetting cut-off to  389.869 eV
+Improving states further at cut-off of  389.869 eV
+------------------------------------------------------------------------ <-- SCF
+SCF loop      Energy           Fermi           Energy gain       Timer   <-- SCF
+                               energy          per atom          (sec)   <-- SCF
+------------------------------------------------------------------------ <-- SCF
+Initial   3.28315065E+004 -6.21824290E+001                       238.60  <-- SCF
+      1  -4.14902486E+004 -4.29454382E+000   1.19873799E+003    1269.50  <-- SCF
+      2  -4.16054027E+004 -1.20733924E+000   1.85732434E+000    2276.11  <-- SCF
+      3  -4.16228274E+004 -2.39781739E-001   2.81043395E-001    3290.76  <-- SCF
+      4  -4.16264296E+004  1.12505197E-001   5.80994378E-002    4300.72  <-- SCF
+      5  -4.16270899E+004  2.18672633E-001   1.06496799E-002    5251.37  <-- SCF
+      6  -4.16271314E+004  2.20783271E-001   6.69507830E-004    6144.56  <-- SCF
+      7  -4.16271318E+004  2.19729349E-001   6.65605082E-006    7255.36  <-- SCF
+      8  -4.16271318E+004  2.19530915E-001   5.09919791E-007    8367.50  <-- SCF
+      9  -4.16271318E+004  2.19476065E-001   5.89366226E-008    9077.90  <-- SCF
+     10  -4.16273958E+004  1.52344415E-001   4.25767369E-003    9700.87  <-- SCF
+     11  -4.16274386E+004  1.38034601E-001   6.90589713E-004   10565.04  <-- SCF
+     12  -4.16274427E+004  1.34631603E-001   6.56466931E-005   11512.23  <-- SCF
+     13  -4.16274433E+004  1.32860164E-001   1.06468247E-005   12555.50  <-- SCF
+     14  -4.16274433E+004  1.32770391E-001   7.42785663E-008   13318.13  <-- SCF
+     15  -4.16274433E+004  1.32770391E-001   0.00000000E+000   13883.33  <-- SCF
+------------------------------------------------------------------------ <-- SCF
+ 
+Integrated Spin Density     =     113.406     hbar/2                        
+Integrated |Spin Density|   =     118.623     hbar/2                        
+ 
+Final energy, E             =  -41626.44748210     eV
+Final free energy (E-TS)    =  -41627.44334590     eV
+(energies not corrected for finite basis set)
+ 
+NB est. 0K energy (E-0.5TS)      =  -41626.94541400     eV
+ 
+Calculating total energy with cut-off of  395.000 eV.
+------------------------------------------------------------------------ <-- SCF
+SCF loop      Energy           Fermi           Energy gain       Timer   <-- SCF
+                               energy          per atom          (sec)   <-- SCF
+------------------------------------------------------------------------ <-- SCF
+Initial  -4.16270580E+004  1.34134429E-001                     13924.42  <-- SCF
+      1  -4.16275293E+004  1.32803987E-001   7.60145109E-003   14368.51  <-- SCF
+      2  -4.16275295E+004  1.32711148E-001   2.42315111E-006   14918.80  <-- SCF
+      3  -4.16275295E+004  1.32710213E-001   1.41705759E-011   15515.82  <-- SCF
+      4  -4.16275295E+004  1.32710213E-001   0.00000000E+000   16102.20  <-- SCF
+------------------------------------------------------------------------ <-- SCF
+ 
+Integrated Spin Density     =     113.377     hbar/2                        
+Integrated |Spin Density|   =     118.592     hbar/2                        
+ 
+Final energy, E             =  -41626.53271920     eV
+Final free energy (E-TS)    =  -41627.52946101     eV
+(energies not corrected for finite basis set)
+ 
+NB est. 0K energy (E-0.5TS)      =  -41627.03109010     eV
+ 
+Calculating total energy with cut-off of  400.000 eV.
+------------------------------------------------------------------------ <-- SCF
+SCF loop      Energy           Fermi           Energy gain       Timer   <-- SCF
+                               energy          per atom          (sec)   <-- SCF
+------------------------------------------------------------------------ <-- SCF
+Initial  -4.16275270E+004  1.33835873E-001                     16144.74  <-- SCF
+      1  -4.16276001E+004  1.32907752E-001   1.17945493E-003   16678.54  <-- SCF
+      2  -4.16276001E+004  1.32907235E-001   5.35088929E-010   17317.27  <-- SCF
+      3  -4.16276001E+004  1.32907228E-001   2.59461249E-012   17934.17  <-- SCF
+------------------------------------------------------------------------ <-- SCF
+ 
+Integrated Spin Density     =     113.367     hbar/2                        
+Integrated |Spin Density|   =     118.583     hbar/2                        
+ 
+Final energy, E             =  -41626.60303939     eV
+Final free energy (E-TS)    =  -41627.60008203     eV
+(energies not corrected for finite basis set)
+ 
+NB est. 0K energy (E-0.5TS)      =  -41627.10156071     eV
+ 
+ For future reference: finite basis dEtot/dlog(Ecut) =      -6.066718eV
+ Total energy corrected for finite basis set =  -41627.598909 eV
+ 
+ ************************** Forces **************************
+ *                                                          *
+ *               Cartesian components (eV/A)                *
+ * -------------------------------------------------------- *
+ *                         x            y            z      *
+ *                                                          *
+ * H               1     -0.06120     -0.06768      0.00472 *
+ * H               2      0.01071     -0.30664     -0.22942 *
+ * H               3     -1.73224      0.29341      1.43055 *
+ * H               4     -0.02788      0.00171     -0.07561 *
+ * H               5      0.00957      0.06244     -0.01541 *
+ * H               6      0.03760     -0.01287      0.04347 *
+ * H               7      0.31201     -0.03022     -0.26594 *
+ * H               8     -0.04937     -0.11354     -0.01676 *
+ * H               9     -0.02632     -0.02800     -0.03195 *
+ * H              10     -0.03295      0.01334     -0.00067 *
+ * H              11      0.02746     -0.02149      0.02875 *
+ * H              12      0.00224     -0.01168      0.00132 *
+ * H              13      0.01923     -0.03355     -0.03309 *
+ * H              14      0.02378     -0.01433      0.06315 *
+ * Fe              1      0.76790      0.13418     -0.38775 *
+ * Fe              2     -0.04327      0.13630     -0.00218 *
+ * Fe              3      0.16079      0.12068      0.03062 *
+ * Fe              4      0.02386     -0.07050     -0.00943 *
+ * Fe              5      0.02434      0.01420     -0.05139 *
+ * Fe              6      0.00434     -0.09806     -0.00253 *
+ * Fe              7     -0.00908      0.09337      0.02813 *
+ * Fe              8     -0.01363     -0.06490     -0.06479 *
+ * Fe              9     -0.01882      0.07489      0.01902 *
+ * Fe             10     -0.01328     -0.01457     -0.01557 *
+ * Fe             11      0.01831     -0.21445      0.04670 *
+ * Fe             12     -0.06879      0.11105     -0.17260 *
+ * Fe             13      0.04475      0.09720     -0.03159 *
+ * Fe             14      0.50900     -0.01757     -0.26288 *
+ * Fe             15      0.18988     -0.02831      0.19733 *
+ * Fe             16     -0.00096      0.06411      0.01235 *
+ * Fe             17     -0.01499     -0.00649     -0.02454 *
+ * Fe             18      0.00652     -0.06447      0.02900 *
+ * Fe             19      0.01538      0.05419      0.03292 *
+ * Fe             20     -0.04278     -0.07227     -0.04119 *
+ * Fe             21     -0.00631      0.08942     -0.00037 *
+ * Fe             22      0.00463     -0.01935     -0.02447 *
+ * Fe             23      0.01336     -0.26793     -0.12622 *
+ * Fe             24     -0.03672     -0.10795     -0.02293 *
+ * Fe             25      0.01942      0.05185     -0.03899 *
+ * Fe             26     -0.01555      0.06241     -0.02861 *
+ * Fe             27      0.01507      0.01639      0.00513 *
+ * Fe             28      0.01052     -0.09856      0.01210 *
+ * Fe             29     -0.00322      0.07361     -0.05529 *
+ * Fe             30     -0.01860     -0.02732     -0.03084 *
+ * Fe             31      0.01326      0.07418      0.01258 *
+ * Fe             32      0.00559      0.01184      0.01989 *
+ * Fe             33     -0.00035      0.07170     -0.05426 *
+ * Fe             34     -0.01277      0.04487     -0.02063 *
+ * Fe             35      0.00970     -0.08175     -0.00634 *
+ * Fe             36      0.00113     -0.05062     -0.05088 *
+ * Fe             37      0.01464      0.07248      0.01228 *
+ * Fe             38     -0.02373      0.04862      0.03830 *
+ * Fe             39      0.00768      0.01593      0.02348 *
+ * Fe             40      0.01250     -0.07871      0.00102 *
+ * Fe             41     -0.03461      0.05663      0.02691 *
+ * Fe             42     -0.00118      0.00642      0.02467 *
+ * Fe             43      0.01189      0.04937      0.03923 *
+ * Fe             44      0.02261      0.02244      0.00759 *
+ * Fe             45     -0.02316      0.08077     -0.01345 *
+ * Fe             46     -0.01052      0.03196      0.02035 *
+ * Fe             47      0.00663     -0.07834     -0.00152 *
+ * Fe             48     -0.03403     -0.04989     -0.00147 *
+ *                                                          *
+ ************************************************************
+ 
+ ***************** Stress Tensor *****************
+ *                                               *
+ *          Cartesian components (GPa)           *
+ * --------------------------------------------- *
+ *             x             y             z     *
+ *                                               *
+ *  x     -2.232533     -0.150808      0.069380  *
+ *  y     -0.150808      0.972412     -0.328785  *
+ *  z      0.069380     -0.328785     -0.552355  *
+ *                                               *
+ *  Pressure:    0.6042                          *
+ *                                               *
+ *************************************************
+ 
+ Pseudo atomic calculation performed for H 1s1
+ 
+ Converged in 16 iterations to a total energy of -12.4388 eV
+ 
+ Pseudo atomic calculation performed for Fe 3d6 4s2
+ 
+ Converged in 39 iterations to a total energy of -853.7730 eV
+Charge spilling parameter for spin component 1 = 0.16%
+Charge spilling parameter for spin component 2 = 0.53%
+ 
+                   Orbital Populations                  
+  ---------------------------------------------------------------
+     Ion    Atom   Orbital              Up        Down      Spin
+  ---------------------------------------------------------------
+      H     1      S                    0.582     0.644    -0.062
+      H     2      S                    0.577     0.651    -0.074
+      H     3      S                    0.638     0.695    -0.056
+      H     4      S                    0.561     0.648    -0.086
+      H     5      S                    0.602     0.668    -0.066
+      H     6      S                    0.598     0.669    -0.071
+      H     7      S                    0.621     0.673    -0.052
+      H     8      S                    0.604     0.671    -0.068
+      H     9      S                    0.603     0.665    -0.063
+      H    10      S                    0.604     0.669    -0.066
+      H    11      S                    0.602     0.670    -0.068
+      H    12      S                    0.601     0.670    -0.069
+      H    13      S                    0.597     0.660    -0.063
+      H    14      S                    0.592     0.667    -0.075
+     Fe     1      Dzz                  0.955     0.457     0.498
+     Fe     1      Dzy                  0.899     0.468     0.432
+     Fe     1      Dzx                  0.882     0.376     0.506
+     Fe     1      Dxx-yy               0.887     0.370     0.517
+     Fe     1      Dxy                  0.861     0.605     0.255
+     Fe     1      S                    0.287     0.249     0.038
+     Fe     1      Px                  -0.002     0.000    -0.003
+     Fe     1      Py                   0.087     0.100    -0.014
+     Fe     1      Pz                   0.034     0.017     0.018
+     Fe     2      Dzz                  0.900     0.453     0.447
+     Fe     2      Dzy                  0.902     0.483     0.419
+     Fe     2      Dzx                  0.951     0.290     0.660
+     Fe     2      Dxx-yy               0.936     0.347     0.588
+     Fe     2      Dxy                  0.878     0.511     0.367
+     Fe     2      S                    0.335     0.355    -0.020
+     Fe     2      Px                   0.068     0.109    -0.041
+     Fe     2      Py                   0.076     0.123    -0.047
+     Fe     2      Pz                   0.091     0.159    -0.068
+     Fe     3      Dzz                  0.951     0.449     0.502
+     Fe     3      Dzy                  0.870     0.472     0.398
+     Fe     3      Dzx                  0.905     0.345     0.561
+     Fe     3      Dxx-yy               0.912     0.345     0.568
+     Fe     3      Dxy                  0.873     0.576     0.297
+     Fe     3      S                    0.337     0.311     0.026
+     Fe     3      Px                   0.065     0.095    -0.030
+     Fe     3      Py                   0.092     0.107    -0.015
+     Fe     3      Pz                   0.051     0.043     0.008
+     Fe     4      Dzz                  0.952     0.444     0.508
+     Fe     4      Dzy                  0.877     0.465     0.413
+     Fe     4      Dzx                  0.916     0.326     0.590
+     Fe     4      Dxx-yy               0.914     0.348     0.566
+     Fe     4      Dxy                  0.874     0.571     0.303
+     Fe     4      S                    0.331     0.306     0.025
+     Fe     4      Px                   0.060     0.087    -0.026
+     Fe     4      Py                   0.088     0.108    -0.020
+     Fe     4      Pz                   0.048     0.040     0.009
+     Fe     5      Dzz                  0.910     0.441     0.469
+     Fe     5      Dzy                  0.915     0.462     0.453
+     Fe     5      Dzx                  0.952     0.291     0.661
+     Fe     5      Dxx-yy               0.938     0.341     0.597
+     Fe     5      Dxy                  0.887     0.503     0.384
+     Fe     5      S                    0.335     0.356    -0.021
+     Fe     5      Px                   0.074     0.110    -0.037
+     Fe     5      Py                   0.080     0.131    -0.052
+     Fe     5      Pz                   0.100     0.169    -0.069
+     Fe     6      Dzz                  0.896     0.450     0.446
+     Fe     6      Dzy                  0.904     0.488     0.416
+     Fe     6      Dzx                  0.950     0.297     0.653
+     Fe     6      Dxx-yy               0.934     0.347     0.587
+     Fe     6      Dxy                  0.876     0.506     0.370
+     Fe     6      S                    0.338     0.362    -0.024
+     Fe     6      Px                   0.069     0.109    -0.040
+     Fe     6      Py                   0.072     0.124    -0.051
+     Fe     6      Pz                   0.088     0.157    -0.069
+     Fe     7      Dzz                  0.955     0.420     0.535
+     Fe     7      Dzy                  0.888     0.476     0.412
+     Fe     7      Dzx                  0.925     0.320     0.605
+     Fe     7      Dxx-yy               0.922     0.341     0.581
+     Fe     7      Dxy                  0.873     0.554     0.319
+     Fe     7      S                    0.332     0.301     0.031
+     Fe     7      Px                   0.069     0.095    -0.025
+     Fe     7      Py                   0.084     0.094    -0.010
+     Fe     7      Pz                   0.052     0.037     0.014
+     Fe     8      Dzz                  0.952     0.441     0.511
+     Fe     8      Dzy                  0.875     0.474     0.402
+     Fe     8      Dzx                  0.910     0.333     0.577
+     Fe     8      Dxx-yy               0.918     0.337     0.581
+     Fe     8      Dxy                  0.882     0.563     0.318
+     Fe     8      S                    0.329     0.305     0.025
+     Fe     8      Px                   0.071     0.099    -0.029
+     Fe     8      Py                   0.095     0.111    -0.016
+     Fe     8      Pz                   0.048     0.036     0.012
+     Fe     9      Dzz                  0.897     0.445     0.452
+     Fe     9      Dzy                  0.900     0.500     0.400
+     Fe     9      Dzx                  0.950     0.298     0.652
+     Fe     9      Dxx-yy               0.934     0.345     0.588
+     Fe     9      Dxy                  0.878     0.506     0.372
+     Fe     9      S                    0.337     0.360    -0.023
+     Fe     9      Px                   0.069     0.108    -0.039
+     Fe     9      Py                   0.069     0.116    -0.048
+     Fe     9      Pz                   0.088     0.155    -0.067
+     Fe    10      Dzz                  0.900     0.451     0.448
+     Fe    10      Dzy                  0.906     0.484     0.422
+     Fe    10      Dzx                  0.953     0.290     0.662
+     Fe    10      Dxx-yy               0.934     0.346     0.588
+     Fe    10      Dxy                  0.876     0.509     0.367
+     Fe    10      S                    0.338     0.360    -0.023
+     Fe    10      Px                   0.068     0.105    -0.037
+     Fe    10      Py                   0.075     0.125    -0.049
+     Fe    10      Pz                   0.086     0.156    -0.070
+     Fe    11      Dzz                  0.936     0.495     0.441
+     Fe    11      Dzy                  0.875     0.448     0.427
+     Fe    11      Dzx                  0.904     0.336     0.569
+     Fe    11      Dxx-yy               0.932     0.354     0.578
+     Fe    11      Dxy                  0.861     0.557     0.304
+     Fe    11      S                    0.331     0.306     0.025
+     Fe    11      Px                   0.076     0.113    -0.037
+     Fe    11      Py                   0.098     0.112    -0.014
+     Fe    11      Pz                   0.044     0.036     0.008
+     Fe    12      Dzz                  0.909     0.451     0.457
+     Fe    12      Dzy                  0.914     0.457     0.458
+     Fe    12      Dzx                  0.952     0.287     0.665
+     Fe    12      Dxx-yy               0.936     0.350     0.586
+     Fe    12      Dxy                  0.891     0.496     0.395
+     Fe    12      S                    0.334     0.355    -0.022
+     Fe    12      Px                   0.073     0.108    -0.035
+     Fe    12      Py                   0.081     0.133    -0.052
+     Fe    12      Pz                   0.096     0.163    -0.067
+     Fe    13      Dzz                  0.950     0.459     0.491
+     Fe    13      Dzy                  0.883     0.487     0.397
+     Fe    13      Dzx                  0.924     0.307     0.617
+     Fe    13      Dxx-yy               0.928     0.358     0.570
+     Fe    13      Dxy                  0.862     0.525     0.336
+     Fe    13      S                    0.325     0.296     0.029
+     Fe    13      Px                   0.072     0.101    -0.029
+     Fe    13      Py                   0.082     0.091    -0.009
+     Fe    13      Pz                   0.045     0.027     0.018
+     Fe    14      Dzz                  0.896     0.454     0.443
+     Fe    14      Dzy                  0.901     0.499     0.402
+     Fe    14      Dzx                  0.943     0.290     0.653
+     Fe    14      Dxx-yy               0.935     0.356     0.578
+     Fe    14      Dxy                  0.882     0.515     0.367
+     Fe    14      S                    0.333     0.354    -0.021
+     Fe    14      Px                   0.060     0.089    -0.029
+     Fe    14      Py                   0.085     0.136    -0.051
+     Fe    14      Pz                   0.059     0.106    -0.047
+     Fe    15      Dzz                  0.939     0.488     0.451
+     Fe    15      Dzy                  0.849     0.513     0.336
+     Fe    15      Dzx                  0.897     0.351     0.546
+     Fe    15      Dxx-yy               0.916     0.371     0.545
+     Fe    15      Dxy                  0.855     0.552     0.303
+     Fe    15      S                    0.315     0.297     0.018
+     Fe    15      Px                   0.074     0.103    -0.029
+     Fe    15      Py                   0.091     0.104    -0.014
+     Fe    15      Pz                   0.031     0.018     0.013
+     Fe    16      Dzz                  0.951     0.442     0.509
+     Fe    16      Dzy                  0.875     0.483     0.393
+     Fe    16      Dzx                  0.923     0.318     0.604
+     Fe    16      Dxx-yy               0.916     0.341     0.575
+     Fe    16      Dxy                  0.874     0.564     0.310
+     Fe    16      S                    0.329     0.300     0.029
+     Fe    16      Px                   0.063     0.089    -0.026
+     Fe    16      Py                   0.084     0.095    -0.011
+     Fe    16      Pz                   0.049     0.036     0.013
+     Fe    17      Dzz                  0.897     0.448     0.448
+     Fe    17      Dzy                  0.903     0.491     0.412
+     Fe    17      Dzx                  0.950     0.296     0.654
+     Fe    17      Dxx-yy               0.934     0.346     0.588
+     Fe    17      Dxy                  0.874     0.512     0.363
+     Fe    17      S                    0.337     0.361    -0.023
+     Fe    17      Px                   0.066     0.103    -0.037
+     Fe    17      Py                   0.071     0.122    -0.050
+     Fe    17      Pz                   0.090     0.158    -0.068
+     Fe    18      Dzz                  0.900     0.445     0.455
+     Fe    18      Dzy                  0.905     0.485     0.420
+     Fe    18      Dzx                  0.951     0.297     0.654
+     Fe    18      Dxx-yy               0.936     0.346     0.590
+     Fe    18      Dxy                  0.885     0.495     0.390
+     Fe    18      S                    0.341     0.361    -0.019
+     Fe    18      Px                   0.074     0.115    -0.040
+     Fe    18      Py                   0.073     0.126    -0.053
+     Fe    18      Pz                   0.080     0.148    -0.067
+     Fe    19      Dzz                  0.950     0.434     0.516
+     Fe    19      Dzy                  0.859     0.518     0.341
+     Fe    19      Dzx                  0.909     0.342     0.567
+     Fe    19      Dxx-yy               0.908     0.343     0.565
+     Fe    19      Dxy                  0.876     0.568     0.309
+     Fe    19      S                    0.329     0.305     0.023
+     Fe    19      Px                   0.070     0.100    -0.030
+     Fe    19      Py                   0.081     0.094    -0.013
+     Fe    19      Pz                   0.046     0.035     0.011
+     Fe    20      Dzz                  0.941     0.511     0.430
+     Fe    20      Dzy                  0.869     0.481     0.389
+     Fe    20      Dzx                  0.915     0.314     0.601
+     Fe    20      Dxx-yy               0.912     0.355     0.557
+     Fe    20      Dxy                  0.854     0.561     0.293
+     Fe    20      S                    0.317     0.291     0.026
+     Fe    20      Px                   0.061     0.082    -0.021
+     Fe    20      Py                   0.089     0.099    -0.009
+     Fe    20      Pz                   0.049     0.036     0.013
+     Fe    21      Dzz                  0.898     0.448     0.450
+     Fe    21      Dzy                  0.903     0.482     0.421
+     Fe    21      Dzx                  0.949     0.301     0.648
+     Fe    21      Dxx-yy               0.934     0.343     0.591
+     Fe    21      Dxy                  0.877     0.515     0.362
+     Fe    21      S                    0.337     0.360    -0.023
+     Fe    21      Px                   0.068     0.109    -0.041
+     Fe    21      Py                   0.074     0.122    -0.048
+     Fe    21      Pz                   0.092     0.161    -0.069
+     Fe    22      Dzz                  0.908     0.438     0.470
+     Fe    22      Dzy                  0.904     0.485     0.419
+     Fe    22      Dzx                  0.951     0.293     0.658
+     Fe    22      Dxx-yy               0.937     0.344     0.593
+     Fe    22      Dxy                  0.881     0.501     0.381
+     Fe    22      S                    0.335     0.356    -0.021
+     Fe    22      Px                   0.070     0.110    -0.040
+     Fe    22      Py                   0.079     0.133    -0.054
+     Fe    22      Pz                   0.090     0.160    -0.069
+     Fe    23      Dzz                  0.946     0.497     0.449
+     Fe    23      Dzy                  0.899     0.495     0.403
+     Fe    23      Dzx                  0.885     0.355     0.530
+     Fe    23      Dxx-yy               0.896     0.329     0.568
+     Fe    23      Dxy                  0.870     0.570     0.300
+     Fe    23      S                    0.291     0.272     0.019
+     Fe    23      Px                   0.057     0.071    -0.014
+     Fe    23      Py                   0.077     0.079    -0.002
+     Fe    23      Pz                   0.044     0.037     0.007
+     Fe    24      Dzz                  0.901     0.452     0.449
+     Fe    24      Dzy                  0.910     0.469     0.440
+     Fe    24      Dzx                  0.951     0.295     0.656
+     Fe    24      Dxx-yy               0.935     0.345     0.589
+     Fe    24      Dxy                  0.878     0.511     0.367
+     Fe    24      S                    0.334     0.356    -0.022
+     Fe    24      Px                   0.062     0.100    -0.038
+     Fe    24      Py                   0.075     0.124    -0.049
+     Fe    24      Pz                   0.089     0.159    -0.070
+     Fe    25      Dzz                  0.902     0.454     0.448
+     Fe    25      Dzy                  0.910     0.490     0.421
+     Fe    25      Dzx                  0.951     0.298     0.652
+     Fe    25      Dxx-yy               0.932     0.353     0.580
+     Fe    25      Dxy                  0.872     0.498     0.374
+     Fe    25      S                    0.331     0.359    -0.028
+     Fe    25      Px                   0.071     0.112    -0.041
+     Fe    25      Py                   0.076     0.136    -0.060
+     Fe    25      Pz                   0.078     0.145    -0.066
+     Fe    26      Dzz                  0.950     0.349     0.601
+     Fe    26      Dzy                  0.943     0.435     0.508
+     Fe    26      Dzx                  0.959     0.311     0.648
+     Fe    26      Dxx-yy               0.926     0.370     0.556
+     Fe    26      Dxy                  0.883     0.529     0.354
+     Fe    26      S                    0.407     0.387     0.020
+     Fe    26      Px                   0.078     0.089    -0.011
+     Fe    26      Py                   0.118     0.177    -0.059
+     Fe    26      Pz                   0.059     0.065    -0.006
+     Fe    27      Dzz                  0.903     0.456     0.447
+     Fe    27      Dzy                  0.909     0.486     0.423
+     Fe    27      Dzx                  0.949     0.298     0.651
+     Fe    27      Dxx-yy               0.933     0.352     0.581
+     Fe    27      Dxy                  0.871     0.504     0.367
+     Fe    27      S                    0.331     0.359    -0.028
+     Fe    27      Px                   0.068     0.109    -0.041
+     Fe    27      Py                   0.077     0.137    -0.060
+     Fe    27      Pz                   0.079     0.143    -0.063
+     Fe    28      Dzz                  0.901     0.456     0.445
+     Fe    28      Dzy                  0.911     0.488     0.423
+     Fe    28      Dzx                  0.950     0.297     0.653
+     Fe    28      Dxx-yy               0.932     0.355     0.577
+     Fe    28      Dxy                  0.874     0.496     0.378
+     Fe    28      S                    0.331     0.360    -0.029
+     Fe    28      Px                   0.069     0.109    -0.040
+     Fe    28      Py                   0.077     0.139    -0.061
+     Fe    28      Pz                   0.081     0.145    -0.064
+     Fe    29      Dzz                  0.951     0.347     0.604
+     Fe    29      Dzy                  0.944     0.439     0.505
+     Fe    29      Dzx                  0.959     0.306     0.653
+     Fe    29      Dxx-yy               0.928     0.366     0.562
+     Fe    29      Dxy                  0.881     0.532     0.349
+     Fe    29      S                    0.407     0.386     0.021
+     Fe    29      Px                   0.079     0.087    -0.008
+     Fe    29      Py                   0.119     0.178    -0.059
+     Fe    29      Pz                   0.059     0.064    -0.005
+     Fe    30      Dzz                  0.951     0.348     0.604
+     Fe    30      Dzy                  0.944     0.433     0.511
+     Fe    30      Dzx                  0.959     0.312     0.647
+     Fe    30      Dxx-yy               0.927     0.368     0.560
+     Fe    30      Dxy                  0.883     0.529     0.354
+     Fe    30      S                    0.407     0.386     0.021
+     Fe    30      Px                   0.079     0.089    -0.010
+     Fe    30      Py                   0.118     0.178    -0.060
+     Fe    30      Pz                   0.059     0.064    -0.005
+     Fe    31      Dzz                  0.900     0.458     0.442
+     Fe    31      Dzy                  0.906     0.492     0.414
+     Fe    31      Dzx                  0.949     0.299     0.650
+     Fe    31      Dxx-yy               0.931     0.355     0.576
+     Fe    31      Dxy                  0.870     0.505     0.365
+     Fe    31      S                    0.332     0.361    -0.029
+     Fe    31      Px                   0.068     0.108    -0.041
+     Fe    31      Py                   0.075     0.136    -0.061
+     Fe    31      Pz                   0.077     0.141    -0.064
+     Fe    32      Dzz                  0.901     0.457     0.444
+     Fe    32      Dzy                  0.907     0.495     0.411
+     Fe    32      Dzx                  0.950     0.295     0.655
+     Fe    32      Dxx-yy               0.932     0.354     0.578
+     Fe    32      Dxy                  0.871     0.501     0.370
+     Fe    32      S                    0.331     0.359    -0.028
+     Fe    32      Px                   0.069     0.109    -0.040
+     Fe    32      Py                   0.076     0.136    -0.060
+     Fe    32      Pz                   0.079     0.142    -0.064
+     Fe    33      Dzz                  0.950     0.350     0.600
+     Fe    33      Dzy                  0.945     0.433     0.512
+     Fe    33      Dzx                  0.959     0.310     0.649
+     Fe    33      Dxx-yy               0.927     0.369     0.558
+     Fe    33      Dxy                  0.883     0.527     0.357
+     Fe    33      S                    0.404     0.385     0.020
+     Fe    33      Px                   0.080     0.089    -0.009
+     Fe    33      Py                   0.120     0.178    -0.058
+     Fe    33      Pz                   0.059     0.064    -0.005
+     Fe    34      Dzz                  0.951     0.346     0.605
+     Fe    34      Dzy                  0.942     0.438     0.505
+     Fe    34      Dzx                  0.959     0.310     0.648
+     Fe    34      Dxx-yy               0.928     0.366     0.562
+     Fe    34      Dxy                  0.881     0.532     0.349
+     Fe    34      S                    0.407     0.386     0.021
+     Fe    34      Px                   0.079     0.088    -0.009
+     Fe    34      Py                   0.118     0.177    -0.059
+     Fe    34      Pz                   0.059     0.064    -0.005
+     Fe    35      Dzz                  0.900     0.460     0.440
+     Fe    35      Dzy                  0.909     0.483     0.426
+     Fe    35      Dzx                  0.949     0.298     0.652
+     Fe    35      Dxx-yy               0.931     0.355     0.576
+     Fe    35      Dxy                  0.874     0.502     0.372
+     Fe    35      S                    0.332     0.360    -0.028
+     Fe    35      Px                   0.069     0.109    -0.040
+     Fe    35      Py                   0.076     0.136    -0.060
+     Fe    35      Pz                   0.078     0.141    -0.063
+     Fe    36      Dzz                  0.951     0.350     0.601
+     Fe    36      Dzy                  0.944     0.434     0.509
+     Fe    36      Dzx                  0.959     0.307     0.652
+     Fe    36      Dxx-yy               0.928     0.369     0.559
+     Fe    36      Dxy                  0.883     0.529     0.354
+     Fe    36      S                    0.407     0.386     0.021
+     Fe    36      Px                   0.079     0.088    -0.009
+     Fe    36      Py                   0.119     0.178    -0.059
+     Fe    36      Pz                   0.059     0.064    -0.005
+     Fe    37      Dzz                  0.902     0.456     0.446
+     Fe    37      Dzy                  0.908     0.488     0.421
+     Fe    37      Dzx                  0.948     0.301     0.647
+     Fe    37      Dxx-yy               0.932     0.354     0.578
+     Fe    37      Dxy                  0.874     0.499     0.376
+     Fe    37      S                    0.333     0.361    -0.028
+     Fe    37      Px                   0.068     0.108    -0.040
+     Fe    37      Py                   0.075     0.135    -0.060
+     Fe    37      Pz                   0.076     0.140    -0.064
+     Fe    38      Dzz                  0.950     0.353     0.597
+     Fe    38      Dzy                  0.943     0.434     0.509
+     Fe    38      Dzx                  0.959     0.308     0.650
+     Fe    38      Dxx-yy               0.926     0.371     0.555
+     Fe    38      Dxy                  0.883     0.529     0.355
+     Fe    38      S                    0.407     0.385     0.022
+     Fe    38      Px                   0.078     0.087    -0.008
+     Fe    38      Py                   0.119     0.178    -0.059
+     Fe    38      Pz                   0.057     0.062    -0.005
+     Fe    39      Dzz                  0.899     0.461     0.439
+     Fe    39      Dzy                  0.899     0.503     0.397
+     Fe    39      Dzx                  0.949     0.297     0.652
+     Fe    39      Dxx-yy               0.932     0.355     0.578
+     Fe    39      Dxy                  0.872     0.501     0.370
+     Fe    39      S                    0.334     0.361    -0.028
+     Fe    39      Px                   0.071     0.112    -0.041
+     Fe    39      Py                   0.076     0.135    -0.059
+     Fe    39      Pz                   0.069     0.131    -0.061
+     Fe    40      Dzz                  0.900     0.458     0.442
+     Fe    40      Dzy                  0.908     0.488     0.421
+     Fe    40      Dzx                  0.950     0.299     0.650
+     Fe    40      Dxx-yy               0.932     0.355     0.576
+     Fe    40      Dxy                  0.873     0.498     0.375
+     Fe    40      S                    0.331     0.360    -0.028
+     Fe    40      Px                   0.069     0.110    -0.041
+     Fe    40      Py                   0.075     0.136    -0.060
+     Fe    40      Pz                   0.077     0.141    -0.064
+     Fe    41      Dzz                  0.951     0.348     0.603
+     Fe    41      Dzy                  0.943     0.440     0.503
+     Fe    41      Dzx                  0.958     0.311     0.647
+     Fe    41      Dxx-yy               0.928     0.367     0.561
+     Fe    41      Dxy                  0.880     0.531     0.349
+     Fe    41      S                    0.406     0.386     0.020
+     Fe    41      Px                   0.078     0.088    -0.010
+     Fe    41      Py                   0.118     0.177    -0.059
+     Fe    41      Pz                   0.059     0.064    -0.005
+     Fe    42      Dzz                  0.949     0.351     0.598
+     Fe    42      Dzy                  0.942     0.440     0.502
+     Fe    42      Dzx                  0.959     0.309     0.649
+     Fe    42      Dxx-yy               0.926     0.369     0.557
+     Fe    42      Dxy                  0.882     0.530     0.352
+     Fe    42      S                    0.407     0.387     0.020
+     Fe    42      Px                   0.079     0.088    -0.009
+     Fe    42      Py                   0.119     0.179    -0.060
+     Fe    42      Pz                   0.057     0.062    -0.006
+     Fe    43      Dzz                  0.899     0.456     0.443
+     Fe    43      Dzy                  0.908     0.494     0.414
+     Fe    43      Dzx                  0.949     0.299     0.651
+     Fe    43      Dxx-yy               0.931     0.354     0.577
+     Fe    43      Dxy                  0.873     0.500     0.373
+     Fe    43      S                    0.333     0.362    -0.029
+     Fe    43      Px                   0.069     0.110    -0.041
+     Fe    43      Py                   0.077     0.138    -0.061
+     Fe    43      Pz                   0.075     0.138    -0.062
+     Fe    44      Dzz                  0.901     0.456     0.445
+     Fe    44      Dzy                  0.906     0.490     0.417
+     Fe    44      Dzx                  0.950     0.299     0.651
+     Fe    44      Dxx-yy               0.932     0.353     0.579
+     Fe    44      Dxy                  0.871     0.502     0.369
+     Fe    44      S                    0.331     0.359    -0.028
+     Fe    44      Px                   0.068     0.109    -0.040
+     Fe    44      Py                   0.075     0.134    -0.059
+     Fe    44      Pz                   0.078     0.142    -0.064
+     Fe    45      Dzz                  0.949     0.351     0.599
+     Fe    45      Dzy                  0.944     0.433     0.510
+     Fe    45      Dzx                  0.959     0.312     0.647
+     Fe    45      Dxx-yy               0.927     0.370     0.557
+     Fe    45      Dxy                  0.883     0.527     0.357
+     Fe    45      S                    0.406     0.387     0.019
+     Fe    45      Px                   0.080     0.090    -0.010
+     Fe    45      Py                   0.119     0.178    -0.059
+     Fe    45      Pz                   0.058     0.064    -0.005
+     Fe    46      Dzz                  0.951     0.348     0.603
+     Fe    46      Dzy                  0.942     0.440     0.502
+     Fe    46      Dzx                  0.959     0.308     0.652
+     Fe    46      Dxx-yy               0.928     0.367     0.561
+     Fe    46      Dxy                  0.881     0.532     0.349
+     Fe    46      S                    0.408     0.387     0.022
+     Fe    46      Px                   0.079     0.088    -0.009
+     Fe    46      Py                   0.119     0.178    -0.059
+     Fe    46      Pz                   0.057     0.062    -0.005
+     Fe    47      Dzz                  0.899     0.462     0.438
+     Fe    47      Dzy                  0.903     0.496     0.407
+     Fe    47      Dzx                  0.949     0.298     0.651
+     Fe    47      Dxx-yy               0.931     0.357     0.574
+     Fe    47      Dxy                  0.874     0.497     0.378
+     Fe    47      S                    0.333     0.362    -0.028
+     Fe    47      Px                   0.071     0.112    -0.041
+     Fe    47      Py                   0.076     0.136    -0.060
+     Fe    47      Pz                   0.071     0.133    -0.063
+     Fe    48      Dzz                  0.951     0.348     0.602
+     Fe    48      Dzy                  0.943     0.436     0.507
+     Fe    48      Dzx                  0.958     0.312     0.646
+     Fe    48      Dxx-yy               0.927     0.369     0.558
+     Fe    48      Dxy                  0.882     0.528     0.354
+     Fe    48      S                    0.406     0.387     0.019
+     Fe    48      Px                   0.079     0.089    -0.010
+     Fe    48      Py                   0.118     0.178    -0.060
+     Fe    48      Pz                   0.059     0.065    -0.006
+  ---------------------------------------------------------------
+                           Total:     255.683   142.315   113.368
+  ---------------------------------------------------------------
+ 
+     Atomic Populations (Mulliken)
+     -----------------------------
+Species          Ion Spin      s       p       d       f      Total   Charge(e)   Spin(hbar/2)
+==============================================================================================
+  H               1   up:     0.582   0.000   0.000   0.000   0.582    -0.226       -0.062
+                  1   dn:     0.644   0.000   0.000   0.000   0.644
+  H               2   up:     0.577   0.000   0.000   0.000   0.577    -0.227       -0.074
+                  2   dn:     0.651   0.000   0.000   0.000   0.651
+  H               3   up:     0.638   0.000   0.000   0.000   0.638    -0.333       -0.056
+                  3   dn:     0.695   0.000   0.000   0.000   0.695
+  H               4   up:     0.561   0.000   0.000   0.000   0.561    -0.209       -0.086
+                  4   dn:     0.648   0.000   0.000   0.000   0.648
+  H               5   up:     0.602   0.000   0.000   0.000   0.602    -0.270       -0.066
+                  5   dn:     0.668   0.000   0.000   0.000   0.668
+  H               6   up:     0.598   0.000   0.000   0.000   0.598    -0.267       -0.071
+                  6   dn:     0.669   0.000   0.000   0.000   0.669
+  H               7   up:     0.621   0.000   0.000   0.000   0.621    -0.294       -0.052
+                  7   dn:     0.673   0.000   0.000   0.000   0.673
+  H               8   up:     0.604   0.000   0.000   0.000   0.604    -0.275       -0.068
+                  8   dn:     0.671   0.000   0.000   0.000   0.671
+  H               9   up:     0.603   0.000   0.000   0.000   0.603    -0.268       -0.063
+                  9   dn:     0.665   0.000   0.000   0.000   0.665
+  H              10   up:     0.604   0.000   0.000   0.000   0.604    -0.273       -0.066
+                 10   dn:     0.669   0.000   0.000   0.000   0.669
+  H              11   up:     0.602   0.000   0.000   0.000   0.602    -0.272       -0.068
+                 11   dn:     0.670   0.000   0.000   0.000   0.670
+  H              12   up:     0.601   0.000   0.000   0.000   0.601    -0.272       -0.069
+                 12   dn:     0.670   0.000   0.000   0.000   0.670
+  H              13   up:     0.597   0.000   0.000   0.000   0.597    -0.257       -0.063
+                 13   dn:     0.660   0.000   0.000   0.000   0.660
+  H              14   up:     0.592   0.000   0.000   0.000   0.592    -0.259       -0.075
+                 14   dn:     0.667   0.000   0.000   0.000   0.667
+  Fe              1   up:     0.287   0.119   4.484   0.000   4.889     0.468        2.247
+                  1   dn:     0.249   0.118   2.276   0.000   2.642
+  Fe              2   up:     0.335   0.235   4.566   0.000   5.136     0.033        2.305
+                  2   dn:     0.355   0.391   2.085   0.000   2.831
+  Fe              3   up:     0.337   0.208   4.512   0.000   5.056     0.202        2.314
+                  3   dn:     0.311   0.244   2.187   0.000   2.742
+  Fe              4   up:     0.331   0.197   4.533   0.000   5.061     0.245        2.367
+                  4   dn:     0.306   0.235   2.154   0.000   2.694
+  Fe              5   up:     0.335   0.253   4.602   0.000   5.190     0.006        2.386
+                  5   dn:     0.356   0.411   2.038   0.000   2.804
+  Fe              6   up:     0.338   0.228   4.561   0.000   5.127     0.033        2.288
+                  6   dn:     0.362   0.389   2.088   0.000   2.839
+  Fe              7   up:     0.332   0.205   4.562   0.000   5.099     0.264        2.462
+                  7   dn:     0.301   0.226   2.110   0.000   2.637
+  Fe              8   up:     0.329   0.214   4.538   0.000   5.082     0.218        2.382
+                  8   dn:     0.305   0.247   2.148   0.000   2.700
+  Fe              9   up:     0.337   0.226   4.558   0.000   5.121     0.046        2.287
+                  9   dn:     0.360   0.380   2.094   0.000   2.834
+  Fe             10   up:     0.338   0.229   4.568   0.000   5.135     0.039        2.308
+                 10   dn:     0.360   0.386   2.080   0.000   2.827
+  Fe             11   up:     0.331   0.218   4.508   0.000   5.056     0.187        2.300
+                 11   dn:     0.306   0.261   2.189   0.000   2.757
+  Fe             12   up:     0.334   0.250   4.601   0.000   5.185     0.015        2.385
+                 12   dn:     0.355   0.404   2.041   0.000   2.800
+  Fe             13   up:     0.325   0.199   4.548   0.000   5.072     0.276        2.420
+                 13   dn:     0.296   0.219   2.137   0.000   2.652
+  Fe             14   up:     0.333   0.204   4.558   0.000   5.095     0.106        2.295
+                 14   dn:     0.354   0.331   2.114   0.000   2.799
+  Fe             15   up:     0.315   0.196   4.456   0.000   4.967     0.234        2.169
+                 15   dn:     0.297   0.226   2.275   0.000   2.798
+  Fe             16   up:     0.329   0.196   4.538   0.000   5.063     0.269        2.395
+                 16   dn:     0.300   0.220   2.147   0.000   2.668
+  Fe             17   up:     0.337   0.227   4.558   0.000   5.123     0.040        2.286
+                 17   dn:     0.361   0.383   2.093   0.000   2.837
+  Fe             18   up:     0.341   0.228   4.577   0.000   5.146     0.037        2.329
+                 18   dn:     0.361   0.389   2.068   0.000   2.817
+  Fe             19   up:     0.329   0.197   4.502   0.000   5.028     0.233        2.290
+                 19   dn:     0.305   0.229   2.205   0.000   2.739
+  Fe             20   up:     0.317   0.199   4.491   0.000   5.008     0.263        2.279
+                 20   dn:     0.291   0.216   2.222   0.000   2.729
+  Fe             21   up:     0.337   0.233   4.561   0.000   5.131     0.028        2.291
+                 21   dn:     0.360   0.392   2.088   0.000   2.840
+  Fe             22   up:     0.335   0.239   4.581   0.000   5.155     0.026        2.336
+                 22   dn:     0.356   0.403   2.061   0.000   2.819
+  Fe             23   up:     0.291   0.178   4.497   0.000   4.966     0.328        2.261
+                 23   dn:     0.272   0.187   2.247   0.000   2.706
+  Fe             24   up:     0.334   0.226   4.574   0.000   5.134     0.054        2.323
+                 24   dn:     0.356   0.383   2.073   0.000   2.811
+  Fe             25   up:     0.331   0.226   4.568   0.000   5.125     0.031        2.281
+                 25   dn:     0.359   0.393   2.093   0.000   2.844
+  Fe             26   up:     0.407   0.255   4.661   0.000   5.323    -0.034        2.611
+                 26   dn:     0.387   0.331   1.994   0.000   2.712
+  Fe             27   up:     0.331   0.225   4.565   0.000   5.121     0.036        2.278
+                 27   dn:     0.359   0.388   2.096   0.000   2.843
+  Fe             28   up:     0.331   0.227   4.568   0.000   5.126     0.029        2.282
+                 28   dn:     0.360   0.393   2.092   0.000   2.845
+  Fe             29   up:     0.407   0.257   4.664   0.000   5.327    -0.032        2.623
+                 29   dn:     0.386   0.329   1.990   0.000   2.705
+  Fe             30   up:     0.407   0.257   4.664   0.000   5.328    -0.034        2.621
+                 30   dn:     0.386   0.331   1.989   0.000   2.706
+  Fe             31   up:     0.332   0.220   4.556   0.000   5.107     0.039        2.253
+                 31   dn:     0.361   0.385   2.108   0.000   2.854
+  Fe             32   up:     0.331   0.224   4.560   0.000   5.115     0.036        2.266
+                 32   dn:     0.359   0.388   2.102   0.000   2.849
+  Fe             33   up:     0.404   0.258   4.665   0.000   5.328    -0.032        2.624
+                 33   dn:     0.385   0.330   1.989   0.000   2.704
+  Fe             34   up:     0.407   0.256   4.662   0.000   5.325    -0.033        2.617
+                 34   dn:     0.386   0.330   1.992   0.000   2.708
+  Fe             35   up:     0.332   0.223   4.564   0.000   5.118     0.038        2.275
+                 35   dn:     0.360   0.386   2.097   0.000   2.844
+  Fe             36   up:     0.407   0.257   4.665   0.000   5.328    -0.033        2.623
+                 36   dn:     0.386   0.329   1.989   0.000   2.705
+  Fe             37   up:     0.333   0.219   4.564   0.000   5.116     0.045        2.276
+                 37   dn:     0.361   0.382   2.097   0.000   2.840
+  Fe             38   up:     0.407   0.255   4.661   0.000   5.322    -0.030        2.615
+                 38   dn:     0.385   0.327   1.995   0.000   2.707
+  Fe             39   up:     0.334   0.217   4.551   0.000   5.102     0.043        2.246
+                 39   dn:     0.361   0.378   2.116   0.000   2.856
+  Fe             40   up:     0.331   0.222   4.563   0.000   5.116     0.039        2.271
+                 40   dn:     0.360   0.387   2.098   0.000   2.845
+  Fe             41   up:     0.406   0.255   4.659   0.000   5.320    -0.032        2.608
+                 41   dn:     0.386   0.330   1.996   0.000   2.712
+  Fe             42   up:     0.407   0.255   4.657   0.000   5.319    -0.034        2.604
+                 42   dn:     0.387   0.330   1.999   0.000   2.715
+  Fe             43   up:     0.333   0.221   4.561   0.000   5.115     0.034        2.263
+                 43   dn:     0.362   0.386   2.104   0.000   2.851
+  Fe             44   up:     0.331   0.221   4.561   0.000   5.114     0.042        2.270
+                 44   dn:     0.359   0.385   2.100   0.000   2.844
+  Fe             45   up:     0.406   0.257   4.662   0.000   5.324    -0.035        2.614
+                 45   dn:     0.387   0.331   1.993   0.000   2.711
+  Fe             46   up:     0.408   0.255   4.661   0.000   5.325    -0.034        2.616
+                 46   dn:     0.387   0.329   1.994   0.000   2.709
+  Fe             47   up:     0.333   0.218   4.556   0.000   5.107     0.041        2.256
+                 47   dn:     0.362   0.381   2.109   0.000   2.852
+  Fe             48   up:     0.406   0.256   4.661   0.000   5.323    -0.035        2.610
+                 48   dn:     0.387   0.331   1.994   0.000   2.712
+==============================================================================================
+ 
+                 Bond                   Population        Spin       Length (A)
+================================================================================
+              H 3  -- Fe 1                   0.05         0.02          1.47424
+              H 2  -- Fe 15                  0.40         0.02          1.61706
+              H 4  -- Fe 11                  0.40         0.01          1.64587
+              H 1  -- H 4                    0.04         0.02          1.64676
+              H 7  -- Fe 1                   0.31         0.01          1.64739
+              H 3  -- Fe 23                  0.17         0.00          1.65522
+              H 1  -- Fe 23                  0.34         0.01          1.65958
+              H 14 -- Fe 8                   0.36         0.01          1.68057
+              H 6  -- Fe 3                   0.35         0.01          1.68823
+              H 4  -- Fe 20                  0.39         0.01          1.69153
+              H 2  -- Fe 13                  0.33         0.01          1.69240
+              H 13 -- Fe 19                  0.32         0.02          1.70725
+              H 12 -- Fe 19                  0.33         0.01          1.71987
+              H 11 -- Fe 4                   0.33         0.01          1.72291
+              H 9  -- Fe 15                  0.33         0.01          1.72824
+              H 9  -- Fe 16                  0.30         0.01          1.73740
+              H 1  -- Fe 13                  0.25         0.02          1.73962
+              H 8  -- Fe 15                  0.33         0.01          1.74381
+              H 10 -- Fe 16                  0.33         0.01          1.74646
+              H 9  -- Fe 19                  0.32         0.01          1.74858
+              H 10 -- Fe 20                  0.31         0.01          1.74946
+              H 13 -- Fe 23                  0.27         0.01          1.74975
+              H 8  -- Fe 4                   0.32         0.01          1.75012
+              H 10 -- Fe 7                   0.32         0.01          1.75762
+              H 5  -- Fe 23                  0.36         0.01          1.75818
+              H 12 -- Fe 4                   0.32         0.01          1.75824
+              H 11 -- Fe 7                   0.33         0.01          1.76598
+              H 12 -- Fe 8                   0.32         0.01          1.76636
+              H 13 -- Fe 20                  0.28         0.01          1.77148
+              H 7  -- Fe 3                   0.32         0.02          1.77376
+              H 11 -- Fe 3                   0.32         0.01          1.77408
+              H 6  -- Fe 16                  0.31         0.01          1.77772
+              H 5  -- Fe 8                   0.31         0.01          1.78041
+              H 5  -- Fe 1                   0.31         0.01          1.78153
+              H 8  -- Fe 1                   0.31         0.02          1.78308
+              H 14 -- Fe 11                  0.29         0.01          1.78917
+              H 7  -- Fe 11                  0.32         0.01          1.79068
+              H 6  -- Fe 13                  0.30         0.01          1.79480
+              H 14 -- Fe 7                   0.31         0.01          1.80446
+              H 3  -- Fe 14                  0.11         0.01          1.80994
+              H 1  -- Fe 20                  0.22         0.01          1.81471
+              H 1  -- H 13                   0.05         0.01          1.84882
+              H 3  -- Fe 15                  0.17        -0.01          1.89325
+              H 1  -- H 2                    0.05         0.01          1.89848
+              H 4  -- H 14                   0.01         0.01          1.95253
+              H 3  -- H 5                   -0.03         0.01          2.10822
+              H 2  -- Fe 23                  0.15        -0.01          2.17503
+              H 2  -- H 6                    0.01         0.01          2.18667
+              H 3  -- Fe 12                  0.09        -0.01          2.23580
+              H 2  -- H 3                   -0.02         0.00          2.26346
+              H 12 -- H 13                   0.01         0.00          2.30473
+              H 3  -- H 8                   -0.02         0.00          2.30807
+              H 6  -- H 7                    0.01         0.00          2.34040
+              H 5  -- H 14                   0.01         0.00          2.35253
+             Fe 1  -- Fe 3                   0.08        -0.01          2.35670
+              H 3  -- Fe 5                   0.06        -0.01          2.37339
+             Fe 1  -- Fe 11                  0.09        -0.01          2.37375
+              H 4  -- H 10                   0.02         0.00          2.38105
+              H 5  -- H 13                   0.01         0.00          2.38522
+              H 8  -- H 9                    0.01         0.00          2.39239
+              H 6  -- H 11                   0.01         0.00          2.39317
+              H 2  -- H 8                    0.01         0.00          2.39485
+              H 12 -- H 14                   0.01         0.00          2.39908
+              H 9  -- H 12                   0.01         0.00          2.40478
+             Fe 14 -- Fe 17                  0.24        -0.01          2.40597
+             Fe 14 -- Fe 24                  0.24        -0.01          2.41165
+              H 8  -- H 11                   0.01         0.00          2.41432
+             Fe 14 -- Fe 39                  0.19         0.00          2.41969
+              H 9  -- H 10                   0.01         0.00          2.42387
+             Fe 4  -- Fe 15                  0.11        -0.02          2.42465
+             Fe 18 -- Fe 19                  0.11        -0.01          2.42501
+             Fe 39 -- Fe 42                  0.01         0.03          2.42556
+              H 2  -- H 9                    0.02         0.00          2.43283
+             Fe 15 -- Fe 18                  0.10        -0.01          2.43462
+             Fe 43 -- Fe 46                  0.01         0.03          2.43596
+             Fe 3  -- Fe 13                  0.12        -0.02          2.43724
+             Fe 40 -- Fe 45                  0.02         0.03          2.43752
+             Fe 15 -- Fe 16                  0.09        -0.01          2.43765
+             Fe 4  -- Fe 19                  0.11        -0.01          2.43765
+             Fe 37 -- Fe 41                  0.02         0.03          2.43837
+             Fe 14 -- Fe 47                  0.20         0.00          2.43843
+             Fe 2  -- Fe 24                  0.28        -0.02          2.43884
+             Fe 4  -- Fe 7                   0.12        -0.01          2.44008
+             Fe 20 -- Fe 23                 -0.06        -0.00          2.44062
+             Fe 10 -- Fe 24                  0.24        -0.01          2.44109
+             Fe 38 -- Fe 47                  0.01         0.03          2.44152
+             Fe 19 -- Fe 22                  0.14        -0.02          2.44167
+             Fe 2  -- Fe 12                  0.24        -0.01          2.44177
+             Fe 16 -- Fe 19                  0.11        -0.02          2.44183
+             Fe 3  -- Fe 4                   0.12        -0.01          2.44310
+             Fe 6  -- Fe 17                  0.24        -0.01          2.44329
+             Fe 25 -- Fe 29                  0.02         0.03          2.44357
+             Fe 6  -- Fe 9                   0.24        -0.01          2.44374
+             Fe 16 -- Fe 21                  0.14        -0.01          2.44384
+             Fe 31 -- Fe 34                  0.02         0.03          2.44433
+             Fe 26 -- Fe 35                  0.02         0.03          2.44520
+             Fe 28 -- Fe 33                  0.02         0.02          2.44586
+             Fe 35 -- Fe 37                  0.24        -0.02          2.44626
+             Fe 2  -- Fe 5                   0.25        -0.01          2.44631
+             Fe 27 -- Fe 37                  0.24        -0.02          2.44709
+             Fe 44 -- Fe 48                  0.03         0.02          2.44723
+             Fe 3  -- Fe 16                  0.13        -0.02          2.44739
+             Fe 31 -- Fe 40                  0.24        -0.01          2.44764
+             Fe 31 -- Fe 44                  0.24        -0.01          2.44764
+             Fe 8  -- Fe 19                  0.12        -0.02          2.44800
+             Fe 27 -- Fe 30                  0.02         0.03          2.44827
+             Fe 21 -- Fe 22                  0.24        -0.01          2.44895
+             Fe 10 -- Fe 12                  0.24        -0.01          2.44960
+             Fe 32 -- Fe 36                  0.02         0.03          2.44972
+             Fe 10 -- Fe 21                  0.25        -0.01          2.44975
+             Fe 9  -- Fe 10                  0.23        -0.01          2.45023
+             Fe 8  -- Fe 12                  0.16        -0.02          2.45045
+             Fe 28 -- Fe 31                  0.23        -0.01          2.45092
+             Fe 31 -- Fe 32                  0.23        -0.01          2.45120
+             Fe 25 -- Fe 35                  0.24        -0.01          2.45126
+             Fe 26 -- Fe 48                  0.36        -0.01          2.45130
+             Fe 26 -- Fe 41                  0.36        -0.01          2.45132
+             Fe 25 -- Fe 27                  0.24        -0.01          2.45169
+             Fe 30 -- Fe 41                  0.36        -0.01          2.45185
+             Fe 34 -- Fe 48                  0.36        -0.01          2.45190
+             Fe 6  -- Fe 21                  0.24        -0.01          2.45192
+             Fe 26 -- Fe 36                  0.36        -0.01          2.45202
+             Fe 26 -- Fe 29                  0.36        -0.01          2.45204
+             Fe 2  -- Fe 17                  0.24        -0.01          2.45218
+             Fe 43 -- Fe 44                  0.24        -0.02          2.45220
+             Fe 38 -- Fe 48                  0.36        -0.01          2.45220
+             Fe 38 -- Fe 41                  0.36        -0.01          2.45221
+              H 4  -- Fe 13                  0.05        -0.00          2.45227
+             Fe 32 -- Fe 43                  0.24        -0.01          2.45229
+             Fe 32 -- Fe 35                  0.24        -0.02          2.45282
+             Fe 27 -- Fe 28                  0.24        -0.02          2.45296
+             Fe 36 -- Fe 38                  0.36        -0.01          2.45306
+             Fe 29 -- Fe 38                  0.36        -0.01          2.45307
+             Fe 41 -- Fe 42                  0.36        -0.01          2.45320
+             Fe 46 -- Fe 48                  0.36        -0.01          2.45321
+             Fe 8  -- Fe 23                  0.13        -0.01          2.45324
+             Fe 46 -- Fe 47                  0.02         0.03          2.45344
+             Fe 34 -- Fe 45                  0.36        -0.01          2.45366
+             Fe 30 -- Fe 45                  0.36        -0.01          2.45366
+             Fe 40 -- Fe 43                  0.24        -0.02          2.45384
+             Fe 7  -- Fe 16                  0.13        -0.02          2.45404
+             Fe 42 -- Fe 45                  0.36        -0.01          2.45421
+             Fe 45 -- Fe 46                  0.36        -0.01          2.45421
+             Fe 33 -- Fe 34                  0.36        -0.01          2.45427
+             Fe 30 -- Fe 33                  0.36        -0.01          2.45429
+             Fe 29 -- Fe 30                  0.36        -0.01          2.45442
+             Fe 34 -- Fe 36                  0.36        -0.01          2.45446
+             Fe 8  -- Fe 9                   0.13        -0.01          2.45465
+             Fe 7  -- Fe 10                  0.11        -0.01          2.45467
+             Fe 33 -- Fe 46                  0.36        -0.01          2.45498
+             Fe 33 -- Fe 42                  0.36        -0.01          2.45499
+             Fe 4  -- Fe 9                   0.13        -0.01          2.45525
+             Fe 38 -- Fe 39                  0.02         0.03          2.45526
+             Fe 9  -- Fe 18                  0.25        -0.01          2.45537
+             Fe 44 -- Fe 47                  0.25        -0.02          2.45542
+             Fe 25 -- Fe 47                  0.24        -0.01          2.45543
+             Fe 29 -- Fe 42                  0.36        -0.01          2.45554
+             Fe 36 -- Fe 46                  0.36        -0.01          2.45554
+             Fe 28 -- Fe 43                  0.24        -0.01          2.45575
+             Fe 32 -- Fe 47                  0.24        -0.01          2.45586
+             Fe 13 -- Fe 17                  0.12        -0.01          2.45586
+             Fe 35 -- Fe 44                  0.24        -0.02          2.45604
+             Fe 18 -- Fe 21                  0.25        -0.01          2.45618
+             Fe 39 -- Fe 40                  0.24        -0.02          2.45621
+             Fe 28 -- Fe 39                  0.24        -0.01          2.45622
+             Fe 25 -- Fe 39                  0.25        -0.02          2.45639
+             Fe 16 -- Fe 17                  0.12        -0.01          2.45669
+             Fe 3  -- Fe 6                   0.13        -0.02          2.45679
+             Fe 9  -- Fe 22                  0.24        -0.01          2.45794
+              H 11 -- H 12                   0.01         0.00          2.45800
+             Fe 18 -- Fe 43                  0.20        -0.00          2.45827
+             Fe 37 -- Fe 48                  0.02         0.03          2.45840
+             Fe 37 -- Fe 47                  0.24        -0.01          2.45847
+             Fe 27 -- Fe 40                  0.24        -0.02          2.45891
+             Fe 12 -- Fe 22                  0.24        -0.01          2.45933
+             Fe 37 -- Fe 39                  0.23        -0.01          2.45966
+             Fe 11 -- Fe 20                  0.23        -0.05          2.45975
+             Fe 42 -- Fe 43                  0.02         0.03          2.46050
+             Fe 22 -- Fe 24                  0.21        -0.00          2.46059
+             Fe 5  -- Fe 6                   0.24        -0.01          2.46202
+             Fe 9  -- Fe 32                  0.20        -0.00          2.46247
+             Fe 6  -- Fe 7                   0.13        -0.01          2.46278
+             Fe 5  -- Fe 18                  0.24        -0.01          2.46279
+             Fe 7  -- Fe 20                  0.09        -0.01          2.46297
+             Fe 25 -- Fe 36                  0.02         0.03          2.46298
+             Fe 40 -- Fe 41                  0.03         0.03          2.46355
+             Fe 7  -- Fe 8                   0.13        -0.02          2.46376
+             Fe 2  -- Fe 3                   0.13        -0.01          2.46504
+             Fe 44 -- Fe 45                  0.02         0.03          2.46509
+             Fe 6  -- Fe 31                  0.20        -0.00          2.46526
+             Fe 30 -- Fe 31                  0.02         0.03          2.46547
+             Fe 2  -- Fe 11                  0.10        -0.01          2.46559
+             Fe 32 -- Fe 33                  0.03         0.02          2.46567
+             Fe 8  -- Fe 11                  0.12        -0.01          2.46568
+             Fe 26 -- Fe 27                  0.02         0.03          2.46596
+             Fe 17 -- Fe 40                  0.21        -0.00          2.46616
+             Fe 17 -- Fe 18                  0.26        -0.01          2.46617
+             Fe 13 -- Fe 23                 -0.00        -0.02          2.46633
+             Fe 22 -- Fe 47                  0.21        -0.00          2.46756
+             Fe 34 -- Fe 35                  0.03         0.03          2.46820
+             Fe 4  -- Fe 5                   0.14        -0.02          2.46858
+             Fe 21 -- Fe 44                  0.22        -0.01          2.46925
+             Fe 28 -- Fe 29                  0.02         0.03          2.47224
+             Fe 12 -- Fe 25                  0.20        -0.00          2.47356
+             Fe 10 -- Fe 35                  0.21        -0.00          2.47422
+             Fe 19 -- Fe 20                  0.12        -0.02          2.47502
+             Fe 9  -- Fe 28                  0.21        -0.00          2.47683
+             Fe 18 -- Fe 39                  0.21        -0.00          2.47746
+             Fe 24 -- Fe 37                  0.20        -0.00          2.47840
+             Fe 22 -- Fe 43                  0.21        -0.00          2.47859
+             Fe 11 -- Fe 13                  0.25        -0.02          2.47902
+             Fe 13 -- Fe 15                  0.19        -0.04          2.47958
+             Fe 12 -- Fe 32                  0.21        -0.00          2.48102
+              H 10 -- H 11                   0.01         0.00          2.48120
+             Fe 2  -- Fe 27                  0.21        -0.00          2.48241
+             Fe 2  -- Fe 35                  0.21        -0.00          2.48345
+             Fe 5  -- Fe 28                  0.21        -0.00          2.48361
+             Fe 5  -- Fe 25                  0.21        -0.01          2.48375
+             Fe 17 -- Fe 37                  0.20         0.00          2.48388
+             Fe 10 -- Fe 11                  0.15        -0.02          2.48468
+             Fe 20 -- Fe 24                  0.17        -0.02          2.48547
+             Fe 10 -- Fe 31                  0.21        -0.00          2.48653
+             Fe 13 -- Fe 24                  0.11        -0.01          2.48750
+             Fe 6  -- Fe 27                  0.22        -0.00          2.48792
+             Fe 24 -- Fe 44                  0.22        -0.01          2.48815
+             Fe 21 -- Fe 40                  0.22        -0.01          2.48870
+              H 10 -- H 13                   0.01         0.00          2.49220
+             Fe 22 -- Fe 23                  0.19        -0.02          2.49471
+              H 4  -- H 7                    0.01         0.00          2.49591
+             Fe 20 -- Fe 21                  0.13        -0.01          2.50076
+             Fe 5  -- Fe 14                  0.29        -0.02          2.50528
+              H 6  -- H 9                    0.00         0.00          2.50977
+             Fe 12 -- Fe 14                  0.26        -0.01          2.52926
+             Fe 14 -- Fe 15                  0.03        -0.01          2.53908
+             Fe 14 -- Fe 23                 -0.06        -0.00          2.54140
+              H 5  -- H 7                    0.00         0.00          2.54718
+              H 13 -- Fe 8                   0.02        -0.00          2.55289
+              H 7  -- H 8                    0.00         0.00          2.55566
+             Fe 1  -- Fe 15                 -0.00        -0.00          2.55915
+             Fe 1  -- Fe 23                  0.02        -0.01          2.57109
+              H 10 -- H 14                   0.00         0.00          2.57791
+             Fe 1  -- Fe 5                   0.12        -0.02          2.59291
+              H 7  -- Fe 13                  0.01        -0.00          2.64105
+             Fe 1  -- Fe 12                  0.09        -0.01          2.64171
+              H 10 -- Fe 19                 -0.00        -0.00          2.68053
+              H 9  -- Fe 4                  -0.02         0.00          2.68163
+              H 5  -- Fe 11                  0.01        -0.00          2.68924
+              H 4  -- H 13                  -0.00        -0.00          2.69981
+              H 11 -- Fe 16                 -0.01        -0.00          2.71177
+              H 12 -- Fe 7                  -0.00         0.00          2.71203
+              H 8  -- Fe 3                  -0.00        -0.00          2.71691
+              H 1  -- Fe 11                 -0.09         0.01          2.74840
+              H 8  -- H 12                   0.01         0.00          2.75062
+             Fe 15 -- Fe 19                  0.10        -0.02          2.75228
+             Fe 14 -- Fe 37                  0.06         0.01          2.76070
+              H 9  -- H 13                   0.00        -0.00          2.76636
+             Fe 9  -- Fe 19                  0.01         0.02          2.78438
+              H 6  -- H 10                   0.00         0.00          2.78453
+              H 14 -- Fe 20                 -0.06         0.00          2.78759
+              H 6  -- Fe 15                 -0.04         0.00          2.79079
+             Fe 5  -- Fe 15                  0.02         0.01          2.79098
+             Fe 4  -- Fe 6                   0.01         0.02          2.79548
+             Fe 13 -- Fe 16                  0.08        -0.02          2.79641
+              H 4  -- Fe 7                   0.01        -0.00          2.79908
+             Fe 39 -- Fe 41                 -0.07         0.02          2.80466
+             Fe 3  -- Fe 17                  0.02         0.02          2.81004
+             Fe 47 -- Fe 48                 -0.06         0.02          2.81039
+             Fe 8  -- Fe 10                  0.02         0.01          2.81247
+             Fe 7  -- Fe 21                  0.02         0.01          2.81429
+              H 5  -- H 12                   0.00        -0.00          2.81487
+             Fe 4  -- Fe 8                   0.07        -0.02          2.81579
+             Fe 43 -- Fe 45                 -0.07         0.02          2.81735
+             Fe 19 -- Fe 21                 -0.01         0.02          2.81775
+              H 7  -- H 11                   0.00         0.00          2.81875
+             Fe 26 -- Fe 37                 -0.07         0.02          2.81933
+             Fe 40 -- Fe 44                  0.08         0.00          2.82092
+             Fe 6  -- Fe 10                  0.14        -0.01          2.82102
+             Fe 18 -- Fe 28                  0.05         0.01          2.82163
+             Fe 5  -- Fe 12                  0.20        -0.02          2.82206
+             Fe 30 -- Fe 40                 -0.07         0.02          2.82344
+             Fe 2  -- Fe 10                  0.16        -0.01          2.82360
+              H 11 -- H 14                   0.00         0.00          2.82401
+             Fe 14 -- Fe 18                  0.18        -0.02          2.82405
+             Fe 3  -- Fe 7                   0.10        -0.02          2.82456
+             Fe 29 -- Fe 36                  0.36        -0.04          2.82554
+             Fe 12 -- Fe 35                  0.04         0.01          2.82561
+             Fe 9  -- Fe 31                  0.04         0.01          2.82631
+             Fe 27 -- Fe 35                  0.08         0.00          2.82645
+             Fe 9  -- Fe 12                  0.17        -0.01          2.82662
+             Fe 1  -- Fe 4                   0.09        -0.02          2.82697
+             Fe 43 -- Fe 47                  0.08         0.00          2.82700
+             Fe 17 -- Fe 21                  0.14        -0.01          2.82744
+             Fe 34 -- Fe 44                 -0.07         0.02          2.82761
+             Fe 32 -- Fe 46                 -0.06         0.02          2.82885
+             Fe 11 -- Fe 24                 -0.02         0.02          2.82932
+             Fe 7  -- Fe 11                  0.06        -0.01          2.82951
+             Fe 25 -- Fe 38                 -0.07         0.02          2.82973
+             Fe 28 -- Fe 42                 -0.07         0.02          2.83027
+             Fe 21 -- Fe 24                  0.16        -0.01          2.83053
+             Fe 26 -- Fe 34                  0.36        -0.04          2.83115
+             Fe 26 -- Fe 30                  0.36        -0.04          2.83115
+             Fe 28 -- Fe 32                  0.07         0.00          2.83127
+             Fe 29 -- Fe 39                 -0.07         0.02          2.83140
+             Fe 38 -- Fe 42                  0.37        -0.04          2.83158
+             Fe 41 -- Fe 48                  0.36        -0.04          2.83159
+             Fe 38 -- Fe 46                  0.37        -0.04          2.83164
+             Fe 32 -- Fe 34                 -0.06         0.02          2.83188
+             Fe 5  -- Fe 27                  0.04         0.01          2.83204
+             Fe 25 -- Fe 32                  0.08         0.00          2.83224
+             Fe 28 -- Fe 30                 -0.06         0.02          2.83287
+             Fe 25 -- Fe 26                 -0.07         0.02          2.83298
+             Fe 18 -- Fe 22                  0.14        -0.01          2.83301
+             Fe 39 -- Fe 43                  0.08         0.00          2.83340
+             Fe 41 -- Fe 45                  0.36        -0.04          2.83356
+             Fe 45 -- Fe 48                  0.36        -0.04          2.83361
+             Fe 16 -- Fe 18                 -0.01         0.01          2.83396
+             Fe 31 -- Fe 33                 -0.07         0.02          2.83471
+             Fe 25 -- Fe 28                  0.08         0.00          2.83526
+             Fe 33 -- Fe 43                 -0.07         0.02          2.83536
+             Fe 13 -- Fe 14                  0.06         0.00          2.83544
+             Fe 31 -- Fe 35                  0.08         0.00          2.83548
+             Fe 42 -- Fe 46                  0.36        -0.04          2.83556
+             Fe 30 -- Fe 34                  0.36        -0.04          2.83646
+             Fe 22 -- Fe 32                  0.03         0.01          2.83651
+             Fe 29 -- Fe 33                  0.36        -0.04          2.83660
+             Fe 33 -- Fe 36                  0.36        -0.04          2.83663
+             Fe 27 -- Fe 31                  0.08         0.00          2.83684
+             Fe 10 -- Fe 44                  0.04         0.01          2.83714
+             Fe 37 -- Fe 44                  0.08         0.00          2.83726
+             Fe 36 -- Fe 47                 -0.07         0.02          2.83774
+             Fe 39 -- Fe 47                  0.07         0.01          2.83840
+             Fe 27 -- Fe 29                 -0.07         0.02          2.83878
+             Fe 35 -- Fe 36                 -0.07         0.02          2.83882
+             Fe 31 -- Fe 45                 -0.07         0.02          2.83937
+             Fe 35 -- Fe 48                 -0.07         0.02          2.83999
+             Fe 37 -- Fe 40                  0.08         0.00          2.84060
+             Fe 27 -- Fe 41                 -0.07         0.02          2.84073
+             Fe 17 -- Fe 24                  0.13        -0.01          2.84097
+             Fe 12 -- Fe 23                 -0.05         0.01          2.84172
+             Fe 14 -- Fe 25                  0.05         0.01          2.84188
+             Fe 16 -- Fe 20                  0.07        -0.02          2.84322
+             Fe 6  -- Fe 40                  0.04         0.01          2.84348
+              H 2  -- H 5                    0.00         0.00          2.84444
+             Fe 40 -- Fe 42                 -0.07         0.02          2.84453
+             Fe 14 -- Fe 22                  0.16        -0.01          2.84490
+             Fe 3  -- Fe 11                  0.07        -0.02          2.84500
+             Fe 17 -- Fe 27                  0.04         0.01          2.84618
+             Fe 18 -- Fe 40                  0.04         0.01          2.84862
+             Fe 22 -- Fe 44                  0.03         0.01          2.84887
+             Fe 2  -- Fe 37                  0.04         0.01          2.84930
+             Fe 44 -- Fe 46                 -0.07         0.02          2.85003
+             Fe 5  -- Fe 9                   0.15        -0.01          2.85014
+             Fe 37 -- Fe 38                 -0.07         0.02          2.85135
+             Fe 8  -- Fe 22                 -0.06         0.02          2.85179
+             Fe 2  -- Fe 6                   0.15        -0.01          2.85420
+             Fe 6  -- Fe 16                 -0.03         0.02          2.85596
+             Fe 20 -- Fe 22                 -0.01         0.02          2.85687
+             Fe 21 -- Fe 43                  0.03         0.01          2.85722
+             Fe 2  -- Fe 13                 -0.06         0.02          2.85953
+             Fe 24 -- Fe 35                  0.04         0.01          2.85963
+             Fe 1  -- Fe 2                   0.03         0.01          2.85999
+             Fe 13 -- Fe 20                 -0.02        -0.02          2.86009
+             Fe 3  -- Fe 5                  -0.05         0.03          2.86035
+             Fe 17 -- Fe 39                  0.03         0.01          2.86526
+             Fe 24 -- Fe 47                  0.03         0.01          2.86617
+              H 7  -- H 14                   0.00        -0.00          2.86637
+             Fe 6  -- Fe 28                  0.03         0.01          2.86772
+             Fe 9  -- Fe 43                  0.03         0.01          2.86796
+             Fe 19 -- Fe 23                  0.08        -0.02          2.86962
+             Fe 23 -- Fe 24                  0.02         0.02          2.87050
+             Fe 21 -- Fe 31                  0.04         0.01          2.87191
+             Fe 7  -- Fe 9                  -0.04         0.02          2.87514
+             Fe 1  -- Fe 8                   0.09        -0.02          2.87520
+             Fe 15 -- Fe 17                 -0.02         0.01          2.87531
+             Fe 10 -- Fe 32                  0.03         0.01          2.87670
+             Fe 15 -- Fe 23                  0.01        -0.01          2.87842
+             Fe 12 -- Fe 47                  0.03         0.01          2.87885
+             Fe 11 -- Fe 12                 -0.04         0.02          2.88086
+             Fe 4  -- Fe 18                 -0.07         0.03          2.88182
+             Fe 2  -- Fe 25                  0.03         0.01          2.88324
+              H 1  -- H 5                    0.00         0.00          2.88529
+             Fe 5  -- Fe 39                  0.03         0.01          2.88830
+             Fe 10 -- Fe 20                 -0.03         0.02          2.89499
+              H 13 -- Fe 22                 -0.15         0.02          2.90271
+              H 2  -- Fe 16                 -0.01        -0.00          2.93085
+              H 3  -- Fe 13                 -0.02         0.00          2.93506
+              H 5  -- H 8                   -0.00         0.00          2.93539
+              H 2  -- Fe 1                  -0.02        -0.00          2.93733
+              H 10 -- Fe 21                 -0.16         0.02          2.94633
+              H 12 -- Fe 9                  -0.16         0.02          2.96023
+              H 1  -- H 3                   -0.01        -0.00          2.96482
+              H 9  -- Fe 18                 -0.18         0.02          2.96590
+              H 11 -- Fe 6                  -0.16         0.02          2.97528
+              H 1  -- Fe 24                 -0.12         0.01          2.97603
+              H 3  -- Fe 8                  -0.03         0.01          2.98288
+              H 14 -- Fe 10                 -0.15         0.02          2.99636
+================================================================================
+ 
+
+Writing analysis data to neb-calc_1-8.castep_bin
+
+Writing model to neb-calc_1-8.check
+ 
+ A BibTeX formatted list of references used in this run has been written to 
+ neb-calc_1-8.bib
+ 
+Initialisation time =     10.27 s
+Calculation time    =  18004.86 s
+Finalisation time   =      6.42 s
+Total time          =  18021.56 s
+Peak Memory Use     = 2061100 kB
+  
+Overall parallel efficiency rating: Excellent (90%)                             
+  
+Data was distributed by:-
+G-vector (16-way); efficiency rating: Excellent (90%)                           
+k-point (8-way); efficiency rating: Excellent (99%)                             
