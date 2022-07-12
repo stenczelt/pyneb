@@ -6,11 +6,13 @@ from typing import List, Tuple, Union
 
 import ase.io
 import click
+import numpy as np
 from ase.calculators.castep import Castep, CastepParam
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.io.castep import read_param, write_param
 from ase.neb import NEB
 from ase.optimize import BFGS
+from ase.optimize.precon import SplineFit
 
 SUPP_OPT_METHODS = ("bfgs", "lbfgs", "mdmin", "fire")
 
@@ -258,11 +260,15 @@ def step(
 @main.command("refine")
 @click.argument("last_step", type=click.INT)
 @click.argument("seed", type=click.STRING)
-@click.option("num_images", type=click.INT)
-def step(
+@click.argument("num_images", type=click.INT)
+@click.option("--reuse", "-r", is_flag=True)
+@click.option("--finite-basis", "-fb", is_flag=True)
+def refine(
     last_step: int,
     num_images: int,
     seed: str = "neb-calc",
+    reuse: bool = True,
+    finite_basis: bool = True,
 ):
     """Refine around the TS guess
 
@@ -271,18 +277,69 @@ def step(
     """
 
     # read
-    images, castep_calculators = read_images(seed, last_step)
+    previous_images, castep_calculators = read_images(seed, last_step)
 
     # find the TS guess
-    ts_index = images.index(min(images, key=lambda x: x.get_potential_energy()))
+    energies = [at.get_potential_energy() for at in previous_images]
+    ts_index = energies.index(max(energies))
 
-    print(ts_index)
+    if ts_index in {0, len(previous_images) - 1}:
+        raise ValueError(
+            "No transition state found, the maximum of "
+            "the band is the start or end structure"
+        )
 
-    # actual NEB
+    # NEB object
     neb = NEB(
-        images,
+        previous_images,
         method="string",
     )
+
+    # bracket the TS
+    # use the original spline, but choose only the part between
+    # TS +- 1 images, then parametrise N images with that
+    full_string_positions = neb.get_positions()
+    spline_fit: SplineFit = neb.spline_fit(full_string_positions)
+    original_lambdas = np.linspace(0.0, 1.0, neb.nimages)
+    bracket_lambdas = np.linspace(
+        original_lambdas[ts_index - 1],
+        original_lambdas[ts_index + 1],
+        num_images + 2,  # we are dropping the ends
+    )
+    positions = spline_fit.x(bracket_lambdas[1:-1]).reshape(-1, 3)
+
+    # set positions on new images
+    images = [previous_images[ts_index].copy() for _ in range(num_images)]
+    n_atoms = len(images[0])
+    n1 = 0
+    for image in images[1:-1]:
+        n2 = n1 + n_atoms
+        image.set_positions(positions[n1:n2])
+        n1 = n2
+
+    # # write
+    ase.io.write(f"{seed}_refined{last_step}.xyz", images)
+    calc = castep_calculators[ts_index]
+    for i, atoms in enumerate(images):
+        # set the calculator back -> keep the .cell keys
+        atoms.calc = calc
+
+        ase.io.write(
+            f"{seed}_refine_{last_step}-{i:0>2}.cell",
+            atoms,
+            magnetic_moments="initial",
+        )
+
+        if reuse:
+            set_reuse(calc.param, f"{seed}_{last_step}-{i:0>2}.check")
+        if finite_basis:
+            set_finite_basis(calc.param, f"{seed}_0-{i:0>2}.castep")
+
+        write_param(
+            f"{seed}_refine_{last_step}-{i:0>2}.param",
+            calc.param,
+            force_write=True,
+        )
 
 
 if __name__ == "__main__":
