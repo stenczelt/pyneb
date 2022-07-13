@@ -1,4 +1,5 @@
 """Alternative CLI, using click & multiple endpoints"""
+import json
 import re
 import warnings
 from pathlib import Path
@@ -10,7 +11,7 @@ import numpy as np
 from ase.calculators.castep import Castep, CastepParam
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.io.castep import read_param, write_param
-from ase.neb import NEB
+from ase.neb import BaseSplineMethod, NEB
 from ase.optimize import BFGS
 from ase.optimize.precon import SplineFit
 
@@ -110,7 +111,9 @@ def read_de_dlog(fn: Union[Path, str]):
     with Path(fn).open("r") as file:
         lines = file.readlines()
 
-    pattern = re.compile(r"finite basis dEtot/dlog\(Ecut\) =\s+(-\d+\.\d+)\s?eV")
+    pattern = re.compile(
+        r"(?:finite basis dEtot/dlog\(Ecut\)|user-supplied dEtot/dlog\(Ecut\) ) =\s+(-\d+\.\d+)\s?eV"
+    )
     for line in lines:
         m = pattern.search(line)
         if m:
@@ -162,6 +165,12 @@ def set_reuse(params: CastepParam, checkpoint: str):
 
 
 def set_finite_basis(params: CastepParam, castep_fn: Union[Path, str]):
+    if castep_fn == "":
+        # we are starting from scratch
+        params.finite_basis_corr = 2
+        params.basis_de_dloge = None
+        return
+
     de_dlog = read_de_dlog(castep_fn)
 
     if de_dlog is None:
@@ -195,14 +204,34 @@ def read_images(seed: str, last_step: int) -> Tuple[List[ase.Atoms], List[Castep
     return images, castep_calculators
 
 
+class AdjustableImagePositionStringMethod(BaseSplineMethod):
+    """String method, with adjustable position of images on the Spline path interpolation"""
+
+    def __init__(self, neb: NEB, lambdas: Union[List[float], np.array]):
+        super().__init__(neb)
+        assert (
+            len(lambdas) == neb.nimages
+        ), f"{len(lambdas)}, {neb.nimages}, {len(neb.images)}, {lambdas}"
+        self.lambdas = np.array(lambdas)
+
+    def adjust_positions(self, positions):
+        # fit cubic spline to positions, reinterpolate to equispace images
+        # note this uses the preconditioned distance metric.
+        fit = self.neb.spline_fit(positions)
+        new_positions = fit.x(self.lambdas[1:-1]).reshape(-1, 3)
+        return new_positions
+
+
 @main.command("step")
 @click.argument("last_step", type=click.INT)
 @click.argument("seed", type=click.STRING)
+@click.option("--add-images", is_flag=True)
 @click.option("--reuse", "-r", is_flag=True)
 @click.option("--finite-basis", "-fb", is_flag=True)
 def step(
     last_step: int,
     seed: str = "neb-calc",
+    add_images: bool = False,
     reuse: bool = False,
     finite_basis: bool = False,
 ):
@@ -216,11 +245,23 @@ def step(
     # read
     images, castep_calculators = read_images(seed, last_step)
 
+    # read reaction coordinate if present
+    lambdas_on_string = list(np.linspace(0.0, 1.0, len(images)))
+    last_info_file = Path(f"{seed}_band{last_step}.info.json")
+    if last_info_file.is_file():
+        with last_info_file.open(mode="r") as file:
+            data = json.load(file)
+            lambdas_on_string = data["reaction_coordinate"]
+
+    # save the energies
+    energies = [at.get_potential_energy() for at in images]
+
     # actual NEB
     neb = NEB(
         images,
         method="string",
     )
+    neb.method = AdjustableImagePositionStringMethod(neb, lambdas_on_string)
     neb_opt = BFGS(neb)
 
     # perform 1 step, generating next iteration
@@ -228,15 +269,66 @@ def step(
         im.calc.ignored_changes = {"positions"}
     neb_opt.run(fmax=0.05, steps=1)
 
-    # write the NEW interim images
-    num_images = len(images) - 2
+    # checkpoint & carry of finite basis params
+    # checkpoints are the same as before
+    checkpoint_names = [f"{seed}_{last_step}-{i:0>2}.check" for i in range(len(images))]
+    checkpoint_names[0] = ""
+    checkpoint_names[-1] = ""
 
+    # finite basis filenames unchanged
+    finite_basis_filenames = [
+        f"{seed}_{last_step}-{i:0>2}.castep" for i in range(len(images))
+    ]
+    finite_basis_filenames[0] = ""
+    finite_basis_filenames[-1] = ""
+
+    # adding new images
+    if add_images:
+        full_string_positions = neb.get_positions()
+        spline_fit: SplineFit = neb.spline_fit(full_string_positions)
+
+        # find index of the supposed TS
+        ts_index = energies.index(max(energies))
+        if ts_index in {0, len(images) - 1}:
+            raise ValueError(
+                "No transition state found, the maximum of "
+                "the band is the start or end structure"
+            )
+
+        # lambdas for new images -> positions
+        bracket_lambdas = np.linspace(
+            lambdas_on_string[ts_index - 1],
+            lambdas_on_string[ts_index + 1],
+            5,
+        )
+        positions = spline_fit.x(bracket_lambdas[[1, 3]]).reshape(-1, 3)
+
+        # new image before & after TS
+        image_before = images[ts_index].copy()
+        image_before.set_positions(positions[: len(image_before)])
+        image_after = images[ts_index].copy()
+        image_after.set_positions(positions[len(image_after) :])
+
+        # insert them on the right places
+        images.insert(ts_index, image_before)
+        checkpoint_names.insert(ts_index, checkpoint_names[ts_index])
+        castep_calculators.insert(ts_index, castep_calculators[ts_index])
+        finite_basis_filenames.insert(ts_index, "")
+        lambdas_on_string.insert(ts_index, bracket_lambdas[1])
+
+        images.insert(ts_index + 2, image_after)
+        checkpoint_names.insert(ts_index + 2, checkpoint_names[ts_index + 1])
+        castep_calculators.insert(ts_index + 2, castep_calculators[ts_index + 1])
+        finite_basis_filenames.insert(ts_index + 2, "")
+        lambdas_on_string.insert(ts_index + 2, bracket_lambdas[3])
+
+    # write the NEW interim images
     current_step = last_step + 1
     ase.io.write(f"{seed}_band{current_step}.xyz", images)
-    for i in range(1, num_images + 1):
+    for i in range(1, len(images) - 1):
         # set the calculator back -> keep the .cell keys
-        calc = castep_calculators[i]
         atoms = images[i]
+        calc = castep_calculators[i]
         atoms.calc = calc
 
         ase.io.write(
@@ -246,15 +338,21 @@ def step(
         )
 
         if reuse:
-            set_reuse(calc.param, f"{seed}_{last_step}-{i:0>2}.check")
+            set_reuse(calc.param, checkpoint_names[i])
         if finite_basis:
-            set_finite_basis(calc.param, f"{seed}_0-{i:0>2}.castep")
+            set_finite_basis(calc.param, finite_basis_filenames[i])
 
         write_param(
             f"{seed}_{current_step}-{i:0>2}.param",
             calc.param,
             force_write=True,
         )
+
+    # save the current lambdas
+    current_info_file = Path(f"{seed}_band{current_step}.info.json")
+    with current_info_file.open(mode="w") as file:
+        data = {"reaction_coordinate": lambdas_on_string}
+        json.dump(data, file, indent=4, sort_keys=True)
 
 
 @main.command("refine")
