@@ -1,6 +1,12 @@
-A wrapper for ASE's nudged elastict band (NEB) methods, providing I/O parsing for CASTEP. Intended for large configurations, pyneb allows the user to run (independant) single point calculations on individual images with CASTEP. Once all single point calculations for a given band are complete, running pyneb in your working directory will generate .cell and .param files for the next band.
+A wrapper for ASE's nudged elastict band (NEB) methods, providing I/O parsing for CASTEP. 
+Intended for large configurations, pyneb allows the user to run (independant) single point 
+calculations on individual images with CASTEP. 
+Once all single point calculations for a given band are complete, running pyneb in your 
+working directory will generate .cell and .param files for the next band.
 
-Initial seed (.cell and .param) files are assumed to be the two metastable (end) points of the band - this is not checked for and if the configurations have not been geometry optimised for the seed calculation parameters, spurious minimum energy pathways may result!
+Initial seed (.cell and .param) files are assumed to be the two metastable (end) points of the 
+band - this is not checked for and if the configurations have not been geometry optimised 
+for the seed calculation parameters, spurious minimum energy pathways may result!
 
 ------------
 DEPENDENCIES
@@ -16,7 +22,8 @@ DEPENDENCIES
 INSTALL
 -------
 
-To make use of ASE's NEB methods, some modifications are necessary to atoms.py and optimize.py. Please read the INSTALL guide carefully!
+To make use of ASE's NEB methods, some modifications are necessary 
+to atoms.py and optimize.py. Please read the INSTALL guide carefully!
 
 
 1. Move the library files;

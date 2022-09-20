@@ -10,6 +10,7 @@ import click
 import numpy as np
 from ase.calculators.castep import Castep, CastepParam
 from ase.calculators.singlepoint import SinglePointCalculator
+from ase.constraints import FixAtoms
 from ase.io.castep import read_param, write_param
 from ase.neb import BaseSplineMethod, NEB
 from ase.optimize import BFGS
@@ -228,12 +229,14 @@ class AdjustableImagePositionStringMethod(BaseSplineMethod):
 @click.option("--add-images", is_flag=True)
 @click.option("--reuse", "-r", is_flag=True)
 @click.option("--finite-basis", "-fb", is_flag=True)
+@click.option("--method", "-m", type=click.STRING, default="string")
 def step(
     last_step: int,
     seed: str = "neb-calc",
     add_images: bool = False,
     reuse: bool = False,
     finite_basis: bool = False,
+    method="string"
 ):
     """NEB step: interpret current results & write new band
 
@@ -256,10 +259,17 @@ def step(
     # save the energies
     energies = [at.get_potential_energy() for at in images]
 
+    # constrain the bottom 2 layers
+    for atoms in images:
+        constraint = FixAtoms(
+            indices=[at.index for at in atoms if at.position[2] > 8.5]
+        )
+        atoms.set_constraint(constraint)
+
     # actual NEB
     neb = NEB(
         images,
-        method="string",
+        method=method,
     )
     neb.method = AdjustableImagePositionStringMethod(neb, lambdas_on_string)
     neb_opt = BFGS(neb)
